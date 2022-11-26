@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace GPlay
         }
 
         string currentTrack;
+        string selectedFolder;
+
         WMPLib.WindowsMediaPlayer mp3player = new WMPLib.WindowsMediaPlayer();
         double currentTrackPosition = 0;
 
@@ -103,8 +106,34 @@ namespace GPlay
 
         private void aboutToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("GPlay is a open source music player." +
+            MessageBox.Show("GPlay is a open source music player. " +
                 "Made by Grzegorz Karczewski");
+        }
+
+        private void createPlaylistToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog playlistFolder = new FolderBrowserDialog
+            {
+
+            };
+            if (playlistFolder.ShowDialog() == DialogResult.OK)
+            {
+         
+                selectedFolder = playlistFolder.SelectedPath;
+
+                foreach (var playlistItem in selectedFolder)
+                {
+                    var results = Directory.GetFiles(selectedFolder, "*.mp3")
+                          .Select(file => Path.GetFileName(file)).ToArray();
+                    playlistBox.Items.AddRange(results);
+                }
+            }
+
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
