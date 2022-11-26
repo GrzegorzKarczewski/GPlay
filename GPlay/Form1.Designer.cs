@@ -32,6 +32,8 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.button1 = new System.Windows.Forms.Button();
             this.tB_currentTrack = new System.Windows.Forms.TextBox();
+            this.buttonPause = new System.Windows.Forms.Button();
+            this.buttonStop = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonPlay
@@ -42,6 +44,7 @@
             this.buttonPlay.TabIndex = 0;
             this.buttonPlay.Text = "Play";
             this.buttonPlay.UseVisualStyleBackColor = true;
+            this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
             // 
             // openFileDialog1
             // 
@@ -64,11 +67,33 @@
             this.tB_currentTrack.Size = new System.Drawing.Size(371, 20);
             this.tB_currentTrack.TabIndex = 2;
             // 
+            // buttonPause
+            // 
+            this.buttonPause.Location = new System.Drawing.Point(470, 41);
+            this.buttonPause.Name = "buttonPause";
+            this.buttonPause.Size = new System.Drawing.Size(75, 23);
+            this.buttonPause.TabIndex = 3;
+            this.buttonPause.Text = "Pause";
+            this.buttonPause.UseVisualStyleBackColor = true;
+            this.buttonPause.Click += new System.EventHandler(this.buttonPause_Click);
+            // 
+            // buttonStop
+            // 
+            this.buttonStop.Location = new System.Drawing.Point(551, 41);
+            this.buttonStop.Name = "buttonStop";
+            this.buttonStop.Size = new System.Drawing.Size(75, 23);
+            this.buttonStop.TabIndex = 4;
+            this.buttonStop.Text = "Stop";
+            this.buttonStop.UseVisualStyleBackColor = true;
+            this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.buttonStop);
+            this.Controls.Add(this.buttonPause);
             this.Controls.Add(this.tB_currentTrack);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.buttonPlay);
@@ -86,6 +111,8 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox tB_currentTrack;
+        private System.Windows.Forms.Button buttonPause;
+        private System.Windows.Forms.Button buttonStop;
     }
 }
 

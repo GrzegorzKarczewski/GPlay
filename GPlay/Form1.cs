@@ -17,6 +17,9 @@ namespace GPlay
             InitializeComponent();
         }
 
+        string currentTrack;
+        WMPLib.WindowsMediaPlayer mp3player = new WMPLib.WindowsMediaPlayer();
+
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -41,10 +44,28 @@ namespace GPlay
             if (openMusicFile.ShowDialog() == DialogResult.OK) 
             { 
 
-                tB_currentTrack.Text= openMusicFile.FileName;   
+                tB_currentTrack.Text = openMusicFile.FileName;
+                currentTrack= openMusicFile.FileName;
                 //TODO : display name of the track only
                 //          now it displays whole path
             }
+        }
+
+        private void buttonPlay_Click(object sender, EventArgs e)
+        {
+            mp3player.URL = currentTrack;
+            mp3player.controls.play();
+        }
+
+        private void buttonPause_Click(object sender, EventArgs e)
+        {
+            mp3player.controls.pause();
+            // TODO : pausing wont save current position 
+        }
+
+        private void buttonStop_Click(object sender, EventArgs e)
+        {
+            mp3player.controls.stop();
         }
     }
 }
