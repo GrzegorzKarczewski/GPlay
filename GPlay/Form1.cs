@@ -63,7 +63,6 @@ namespace GPlay
             // program knows from where to play
             mp3player.controls.pause();
             currentTrackPosition = mp3player.controls.currentPosition;
-            MessageBox.Show(currentTrackPosition.ToString());
         }
 
         private void buttonStop_Click(object sender, EventArgs e)
@@ -184,7 +183,8 @@ namespace GPlay
                         {
                             write.BaseStream.Seek(0, SeekOrigin.End);
                             write.WriteLine(selectedFolder + "\\" + item.ToString());
-                            //write.WriteLine(Environment.NewLine);
+                            // must flush to save entire list
+                            // without flush it won't save everything
                             write.Flush();
                         }
                         fs.Close();
