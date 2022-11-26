@@ -103,8 +103,7 @@ namespace GPlay
 
                 tB_currentTrack.Text = openMusicFile.FileName;
                 currentTrack = openMusicFile.FileName;
-                //TODO : display name of the track only
-                //          now it displays whole path
+             
             }
         }
 
@@ -186,6 +185,7 @@ namespace GPlay
                             write.BaseStream.Seek(0, SeekOrigin.End);
                             write.WriteLine(selectedFolder + "\\" + item.ToString());
                             //write.WriteLine(Environment.NewLine);
+                            write.Flush();
                         }
                         fs.Close();
                     }
