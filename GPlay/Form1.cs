@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WMPLib;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace GPlay
 {
@@ -41,10 +43,12 @@ namespace GPlay
             mp3player.controls.currentPosition = currentTrackPosition;
             if (currentTrackPosition == 0)
             {
-                mp3player.URL = currentTrack;
-
+                // This code ensures that when selected with mouse
+                // we can still unpause it with play button
+                currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
+                mp3player.URL = selectedFolder + "\\" + currentTrack;        
                 mp3player.controls.play();
-                MessageBox.Show("current track position is always zero");
+                tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
             }
             else
             {
@@ -114,13 +118,12 @@ namespace GPlay
         {
             FolderBrowserDialog playlistFolder = new FolderBrowserDialog
             {
-
+             // placeholder comment for visibility
             };
             if (playlistFolder.ShowDialog() == DialogResult.OK)
             {
          
                 selectedFolder = playlistFolder.SelectedPath;
-
                 foreach (var playlistItem in selectedFolder)
                 {
                     var results = Directory.GetFiles(selectedFolder, "*.mp3")
@@ -133,7 +136,69 @@ namespace GPlay
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (playlistBox.Items.Count > 0)
+            {
+                if (playlistBox.SelectedItem != null)
+                {
+                    currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
+                    mp3player.URL = selectedFolder + "\\" + currentTrack;
+                    mp3player.controls.play();
+                    tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
+                }
+            }
+        }
 
+        private void savePlaylistToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.InitialDirectory = @"C:\";      
+            saveFileDialog1.Title = "Save Playlist";
+            saveFileDialog1.CheckFileExists = false;
+            saveFileDialog1.CheckPathExists = true;
+            saveFileDialog1.DefaultExt = "txt";
+            saveFileDialog1.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+            saveFileDialog1.FilterIndex = 2;
+            saveFileDialog1.RestoreDirectory = true;
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+
+
+                //using (FileStream fs = File.Create(saveFileDialog1.FileName))
+                //{
+                //    foreach (var item in playlistBox.Items)
+                //    {
+                //        var length = item.ToString().Length;
+                //        Byte[] playlistContent = new UTF8Encoding(true).GetBytes(item.ToString());
+                //        fs.Write(playlistContent, 0, length);
+
+
+                //    }
+                //}
+
+                // another way
+                try 
+               {
+                    using (FileStream fs = new FileStream(saveFileDialog1.FileName, FileMode.OpenOrCreate, FileAccess.Write))
+                    {
+                        StreamWriter write = new StreamWriter(fs);
+                        foreach (var item in playlistBox.Items)
+                        {
+                            write.BaseStream.Seek(0, SeekOrigin.End);
+                            write.WriteLine(selectedFolder + "\\" + item.ToString());
+                            //write.WriteLine(Environment.NewLine);
+                        }
+                        fs.Close();
+                    }
+                }
+              catch
+                {
+                    MessageBox.Show("ERROR Saving Playlist");
+                }
+
+
+
+            }
+           
         }
     }
 }
