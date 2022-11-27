@@ -192,10 +192,10 @@ namespace GPlay
 
                 selectedFolder = playlistFolder.SelectedPath;
                 string[] results = Directory.GetFileSystemEntries(selectedFolder, "*.mp3", SearchOption.AllDirectories); // TODO:: reads without keeping catalogue structure
-                                                                                                                      // .Select(file => Path.GetFullPath(file)).ToArray();
+                                                                                                                         // .Select(file => Path.GetFullPath(file)).ToArray();
                 playlistBox.Items.AddRange(results);
 
-                
+
             }
 
         }
@@ -244,8 +244,10 @@ namespace GPlay
                             }
                             fs.Close();
                         }
-                        MessageBox.Show("ERROR: Playlist Empty");
-
+                        else
+                        {
+                            MessageBox.Show("ERROR: Playlist Empty");
+                        }
                     }
                 }
                 catch
@@ -270,7 +272,39 @@ namespace GPlay
         private void openPlaylistToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+
+            OpenFileDialog openPlaylistFile = new OpenFileDialog
+            {
+                InitialDirectory = @"D:\",
+                Title = "Browse Playlist Files",
+                CheckFileExists = true,
+                CheckPathExists = true,
+                DefaultExt = ".txt",
+                Filter = "txt files (*.txt)|*.txt",
+                RestoreDirectory = true,
+                ReadOnlyChecked = true,
+                ShowReadOnly = true
+
+            };
+
+            if (openPlaylistFile.ShowDialog() == DialogResult.OK)
+            {
+
+                if (playlistBox.Items.Count > 0)
+                {
+                    playlistBox.Items.Clear();
+                }
+                string[] lines = System.IO.File.ReadAllLines(openPlaylistFile.FileName);
+                foreach (string line in lines)
+                {
+                    playlistBox.Items.Add(line);
+                }
+
+            }
         }
+
+
+
 
         private void clearCurrentPlaylistToolStripMenuItem_Click(object sender, EventArgs e)
         {
