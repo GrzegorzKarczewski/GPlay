@@ -116,8 +116,9 @@
             // openPlaylistToolStripMenuItem
             // 
             this.openPlaylistToolStripMenuItem.Name = "openPlaylistToolStripMenuItem";
-            this.openPlaylistToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.openPlaylistToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openPlaylistToolStripMenuItem.Text = "Open playlist";
+            this.openPlaylistToolStripMenuItem.Click += new System.EventHandler(this.openPlaylistToolStripMenuItem_Click);
             // 
             // playlistToolStripMenuItem
             // 

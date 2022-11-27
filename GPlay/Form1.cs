@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using System.Configuration;
 using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using WMPLib;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+
 
 namespace GPlay
 {
@@ -20,22 +15,98 @@ namespace GPlay
         public Form1()
         {
             InitializeComponent();
+            ReadAllSettings();
+            MessageBox.Show(defaultPlaylist);
+            LoadDefaultPlaylist();
+
         }
 
+        private void LoadDefaultPlaylist()
+        {
+            string[] lines = System.IO.File.ReadAllLines(defaultPlaylist);
+            foreach (string line in lines)
+            {
+                playlistBox.Items.Add(line);
+            }
+        }
+
+        // Global variables used in app
+        string configFilePath = Application.StartupPath;
+        string defaultPlaylist = ConfigurationManager.AppSettings.Get("DefaultPlaylist");
         string currentTrack;
         string selectedFolder;
-
         WMPLib.WindowsMediaPlayer mp3player = new WMPLib.WindowsMediaPlayer();
         double currentTrackPosition = 0;
+
+
+
+        static void ReadAllSettings()
+        {
+            try
+            {
+                var appSettings = ConfigurationManager.AppSettings;
+
+                if (appSettings.Count == 0)
+                {
+                    Console.WriteLine("AppSettings is empty.");
+                }
+                else
+                {
+                    foreach (var key in appSettings.AllKeys)
+                    {
+                        Console.WriteLine("Key: {0} Value: {1}", key, appSettings[key]);
+                    }
+                }
+            }
+            catch (ConfigurationErrorsException)
+            {
+                Console.WriteLine("Error reading app settings");
+            }
+        }
+
+        static void ReadSetting(string key)
+        {
+            try
+            {
+                var appSettings = ConfigurationManager.AppSettings;
+                string result = appSettings[key] ?? "Not Found";
+                Console.WriteLine(result);
+
+            }
+            catch (ConfigurationErrorsException)
+            {
+                Console.WriteLine("Error reading app settings");
+            }
+        }
+
+        static void AddUpdateAppSettings(string key, string value)
+        {
+            try
+            {
+                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                var settings = configFile.AppSettings.Settings;
+                if (settings[key] == null)
+                {
+                    settings.Add(key, value);
+                }
+                else
+                {
+                    settings[key].Value = value;
+                }
+                configFile.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
+            }
+            catch (ConfigurationErrorsException)
+            {
+                Console.WriteLine("Error writing app settings");
+            }
+        }
+
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
 
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-           
         }
 
         private void buttonPlay_Click(object sender, EventArgs e)
@@ -46,7 +117,7 @@ namespace GPlay
                 // This code ensures that when selected with mouse
                 // we can still unpause it with play button
                 currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
-                mp3player.URL = selectedFolder + "\\" + currentTrack;        
+                mp3player.URL = selectedFolder + "\\" + currentTrack;
                 mp3player.controls.play();
                 tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
             }
@@ -102,7 +173,7 @@ namespace GPlay
 
                 tB_currentTrack.Text = openMusicFile.FileName;
                 currentTrack = openMusicFile.FileName;
-             
+
             }
         }
 
@@ -116,11 +187,11 @@ namespace GPlay
         {
             FolderBrowserDialog playlistFolder = new FolderBrowserDialog
             {
-             // placeholder comment for visibility
+                // placeholder comment for visibility
             };
             if (playlistFolder.ShowDialog() == DialogResult.OK)
             {
-         
+
                 selectedFolder = playlistFolder.SelectedPath;
                 foreach (var playlistItem in selectedFolder)
                 {
@@ -149,7 +220,7 @@ namespace GPlay
         private void savePlaylistToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.InitialDirectory = @"C:\";      
+            saveFileDialog1.InitialDirectory = @"C:\";
             saveFileDialog1.Title = "Save Playlist";
             saveFileDialog1.CheckFileExists = false;
             saveFileDialog1.CheckPathExists = true;
@@ -174,8 +245,8 @@ namespace GPlay
                 //}
 
                 // another way
-                try 
-               {
+                try
+                {
                     using (FileStream fs = new FileStream(saveFileDialog1.FileName, FileMode.OpenOrCreate, FileAccess.Write))
                     {
                         StreamWriter write = new StreamWriter(fs);
@@ -190,15 +261,28 @@ namespace GPlay
                         fs.Close();
                     }
                 }
-              catch
+                catch
                 {
                     MessageBox.Show("ERROR Saving Playlist");
                 }
-
+                // Saving playlist name to configfile
+                try
+                {
+                    AddUpdateAppSettings("DefaultPlaylist", saveFileDialog1.FileName);
+                }
+                catch
+                {
+                    MessageBox.Show("ERROR Trying to update configuration with playlist");
+                }
 
 
             }
-           
+
+        }
+
+        private void openPlaylistToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
