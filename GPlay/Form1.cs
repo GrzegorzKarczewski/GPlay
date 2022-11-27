@@ -117,7 +117,7 @@ namespace GPlay
                 // This code ensures that when selected with mouse
                 // we can still unpause it with play button
                 currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
-                mp3player.URL = selectedFolder + "\\" + currentTrack;
+                mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
                 mp3player.controls.play();
                 tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
             }
@@ -193,13 +193,13 @@ namespace GPlay
             {
 
                 selectedFolder = playlistFolder.SelectedPath;
-                foreach (var playlistItem in selectedFolder)
-                {
-                    var results = Directory.GetFileSystemEntries(selectedFolder, "*.mp3", SearchOption.AllDirectories) // TODO:: reads without keeping catalogue structure
-                          .Select(file => Path.GetFileName(file)).ToArray();
+                //foreach (var playlistItem in selectedFolder)
+                //{
+                string[] results = Directory.GetFileSystemEntries(selectedFolder, "*.mp3", SearchOption.AllDirectories); // TODO:: reads without keeping catalogue structure
+                         // .Select(file => Path.GetFullPath(file)).ToArray();
                     playlistBox.Items.AddRange(results);
 
-                }
+               // }
             }
 
         }
@@ -211,7 +211,7 @@ namespace GPlay
                 if (playlistBox.SelectedItem != null)
                 {
                     currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
-                    mp3player.URL = selectedFolder + "\\" + currentTrack;
+                    mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
                     mp3player.controls.play();
                     tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
                 }
@@ -254,7 +254,7 @@ namespace GPlay
                         foreach (var item in playlistBox.Items)
                         {
                             write.BaseStream.Seek(0, SeekOrigin.End);
-                            write.WriteLine(selectedFolder + "\\" + item.ToString());
+                            write.WriteLine(item.ToString());
                             // must flush to save entire list
                             // without flush it won't save everything
                             write.Flush();
@@ -284,6 +284,14 @@ namespace GPlay
         private void openPlaylistToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void clearCurrentPlaylistToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (playlistBox.Items.Count > 0)
+            {
+                    playlistBox.Items.Clear();
+            }
         }
     }
 }
