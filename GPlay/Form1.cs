@@ -14,8 +14,8 @@ namespace GPlay
         {
             InitializeComponent();
             ReadAllSettings();
-            MessageBox.Show(defaultPlaylist);
             LoadDefaultPlaylist();
+
 
         }
 
@@ -26,16 +26,18 @@ namespace GPlay
             {
                 playlistBox.Items.Add(line);
             }
+            l_currentPlaylist.Text = defaultPlaylist;
         }
 
         // Global variables used in app
         string configFilePath = Application.StartupPath;
         string defaultPlaylist = ConfigurationManager.AppSettings.Get("DefaultPlaylist");
         string currentTrack;
+        string currentPlaylist;
         string selectedFolder;
         WMPLib.WindowsMediaPlayer mp3player = new WMPLib.WindowsMediaPlayer();
         double currentTrackPosition = 0;
-
+     
 
 
         static void ReadAllSettings()
@@ -104,6 +106,8 @@ namespace GPlay
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            trackBar1.Value = 100;
+            //trackBar1.Value = mp3player.settings.volume;
 
         }
 
@@ -116,7 +120,9 @@ namespace GPlay
                 // we can still unpause it with play button
                 currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
                 mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
+                mp3player.settings.volume = 100;
                 mp3player.controls.play();
+                
                 tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
             }
             else
@@ -142,6 +148,7 @@ namespace GPlay
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            //trackBar1.Value = Convert.ToInt16(mp3player.controls.currentPosition);
 
         }
 
@@ -208,8 +215,11 @@ namespace GPlay
                 {
                     currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
                     mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
+               
                     mp3player.controls.play();
+                    //trackBar1.Maximum = Convert.ToInt16(mp3player.currentMedia.duration);
                     tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
+               
                 }
             }
         }
@@ -300,6 +310,8 @@ namespace GPlay
                     playlistBox.Items.Add(line);
                 }
 
+                // show current playlist name
+                l_currentPlaylist.Text = openPlaylistFile.FileName;
             }
         }
 
@@ -312,6 +324,11 @@ namespace GPlay
             {
                 playlistBox.Items.Clear();
             }
+        }
+
+        private void trackBar1_ValueChanged(object sender, EventArgs e)
+        {
+            mp3player.settings.volume = trackBar1.Value;
         }
     }
 }
