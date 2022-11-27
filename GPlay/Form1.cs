@@ -195,9 +195,10 @@ namespace GPlay
                 selectedFolder = playlistFolder.SelectedPath;
                 foreach (var playlistItem in selectedFolder)
                 {
-                    var results = Directory.GetFiles(selectedFolder, "*.mp3")
+                    var results = Directory.GetFileSystemEntries(selectedFolder, "*.mp3", SearchOption.AllDirectories) // TODO:: reads without keeping catalogue structure
                           .Select(file => Path.GetFileName(file)).ToArray();
                     playlistBox.Items.AddRange(results);
+
                 }
             }
 
