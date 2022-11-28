@@ -1,4 +1,6 @@
-﻿namespace GPlay
+﻿using System.Windows.Forms;
+
+namespace GPlay
 {
     partial class Form1
     {
@@ -103,7 +105,10 @@
             this.playlistBox.Name = "playlistBox";
             this.playlistBox.Size = new System.Drawing.Size(1142, 628);
             this.playlistBox.TabIndex = 6;
-            this.playlistBox.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            //this.playlistBox.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            this.playlistBox.MouseDoubleClick += new MouseEventHandler(playlistBox_MouseDoubleClick);
+
+
             // 
             // fileToolStripMenuItem
             // 

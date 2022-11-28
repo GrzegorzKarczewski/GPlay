@@ -204,15 +204,17 @@ namespace GPlay
 
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+       // private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+         private void playlistBox_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (playlistBox.Items.Count > 0)
-            {
-                if (playlistBox.SelectedItem != null)
+            {   
+                int index = this.playlistBox.IndexFromPoint(e.Location);
+              
+                if (index != System.Windows.Forms.ListBox.NoMatches)
                 {
                     currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
                     mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
-
                     mp3player.controls.play();
                     tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
 
