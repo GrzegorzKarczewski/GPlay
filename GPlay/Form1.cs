@@ -30,14 +30,13 @@ namespace GPlay
         }
 
         // Global variables used in app
-        string configFilePath = Application.StartupPath;
         string defaultPlaylist = ConfigurationManager.AppSettings.Get("DefaultPlaylist");
         string currentTrack;
         string currentPlaylist;
         string selectedFolder;
         WMPLib.WindowsMediaPlayer mp3player = new WMPLib.WindowsMediaPlayer();
         double currentTrackPosition = 0;
-     
+
 
 
         static void ReadAllSettings()
@@ -122,7 +121,7 @@ namespace GPlay
                 mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
                 mp3player.settings.volume = 100;
                 mp3player.controls.play();
-                
+
                 tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
             }
             else
@@ -148,7 +147,6 @@ namespace GPlay
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            //trackBar1.Value = Convert.ToInt16(mp3player.controls.currentPosition);
 
         }
 
@@ -198,8 +196,7 @@ namespace GPlay
             {
 
                 selectedFolder = playlistFolder.SelectedPath;
-                string[] results = Directory.GetFileSystemEntries(selectedFolder, "*.mp3", SearchOption.AllDirectories); // TODO:: reads without keeping catalogue structure
-                                                                                                                         // .Select(file => Path.GetFullPath(file)).ToArray();
+                string[] results = Directory.GetFileSystemEntries(selectedFolder, "*.mp3", SearchOption.AllDirectories);
                 playlistBox.Items.AddRange(results);
 
 
@@ -215,11 +212,10 @@ namespace GPlay
                 {
                     currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
                     mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
-               
+
                     mp3player.controls.play();
-                    //trackBar1.Maximum = Convert.ToInt16(mp3player.currentMedia.duration);
                     tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
-               
+
                 }
             }
         }
