@@ -150,6 +150,9 @@ namespace GPlay
 
         private void buttonPlay_Click(object sender, EventArgs e)
         {
+            isPaused= false;
+            isStopped = false;
+           
             mp3player.controls.currentPosition = currentTrackPosition;
             if (currentTrackPosition == 0)
             {
@@ -194,7 +197,7 @@ namespace GPlay
             Invoke(new Action(() =>
             {
 
-                if (isPlaying)
+                if (!isPaused && !isStopped)
                 {
                     // code below should be executed every Interval (1 sec)
                     l_trackLength.Text = TimeSpan.FromSeconds((mp3player.currentMedia.duration/60)).ToString();
@@ -202,14 +205,19 @@ namespace GPlay
                     trackBar2.Maximum = ((int)mp3player.currentMedia.duration);
                     trackBar2.TickFrequency = 100/(int)mp3player.currentMedia.duration;
                     
-                    if (!isPaused || !isStopped)
-                    {
+                   
+                    
                         seconds += 1;
                         trackBar2.Value = trackBar2.Value + 1;
-                    }
+                    
                     l_currentPosition.Text = "";
 
                     l_currentPosition.Text += TimeSpan.FromSeconds(seconds).ToString();
+                    // TODO : 1)
+                    // if i pause, the seconds still increment
+                    // need to fix that and stop trackbar
+                    // 2)
+                    // play next track if currentDuration reached trackbarmaximum
 
                 }
                 
@@ -282,9 +290,7 @@ namespace GPlay
                 {
                     currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
                     mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
-                    //mp3player.controls.play();
                     playFileAndSetOtherStuff();
-                   //timer2.Start();
                     tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
 
                 }
