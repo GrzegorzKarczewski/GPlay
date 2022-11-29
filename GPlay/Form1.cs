@@ -205,8 +205,6 @@ namespace GPlay
                     trackBar2.Maximum = ((int)mp3player.currentMedia.duration);
                     trackBar2.TickFrequency = 100/(int)mp3player.currentMedia.duration;
                     
-                   
-                    
                         seconds += 1;
                         trackBar2.Value = trackBar2.Value + 1;
                     
@@ -385,6 +383,8 @@ namespace GPlay
 
                 // show current playlist name
                 l_currentPlaylist.Text = openPlaylistFile.FileName;
+                //saving opened playlist as default so we have the same on reopening aplication
+                AddUpdateAppSettings("DefaultPlaylist", openPlaylistFile.FileName);
             }
         }
 
@@ -417,9 +417,10 @@ namespace GPlay
 
         }
 
+        private void l_trackLength_Click(object sender, EventArgs e)
+        {
 
-
-
+        }
     }
 
 

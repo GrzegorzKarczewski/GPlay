@@ -54,6 +54,7 @@ namespace GPlay
             this.l_currentPosition = new System.Windows.Forms.Label();
             this.l_trackLength = new System.Windows.Forms.Label();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
+            this.l_separator_slash = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
@@ -124,14 +125,14 @@ namespace GPlay
             // openTrackToolStripMenuItem
             // 
             this.openTrackToolStripMenuItem.Name = "openTrackToolStripMenuItem";
-            this.openTrackToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.openTrackToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openTrackToolStripMenuItem.Text = "Open track";
             this.openTrackToolStripMenuItem.Click += new System.EventHandler(this.openTrackToolStripMenuItem_Click);
             // 
             // openPlaylistToolStripMenuItem
             // 
             this.openPlaylistToolStripMenuItem.Name = "openPlaylistToolStripMenuItem";
-            this.openPlaylistToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.openPlaylistToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openPlaylistToolStripMenuItem.Text = "Open playlist";
             this.openPlaylistToolStripMenuItem.Click += new System.EventHandler(this.openPlaylistToolStripMenuItem_Click);
             // 
@@ -197,7 +198,7 @@ namespace GPlay
             // l_playlist
             // 
             this.l_playlist.AutoSize = true;
-            this.l_playlist.Location = new System.Drawing.Point(13, 88);
+            this.l_playlist.Location = new System.Drawing.Point(9, 88);
             this.l_playlist.Name = "l_playlist";
             this.l_playlist.Size = new System.Drawing.Size(81, 13);
             this.l_playlist.TabIndex = 7;
@@ -215,7 +216,7 @@ namespace GPlay
             // trackBar1
             // 
             this.trackBar1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.trackBar1.Location = new System.Drawing.Point(660, 42);
+            this.trackBar1.Location = new System.Drawing.Point(662, 45);
             this.trackBar1.Maximum = 100;
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Size = new System.Drawing.Size(81, 45);
@@ -228,7 +229,7 @@ namespace GPlay
             // l_currentPosition
             // 
             this.l_currentPosition.AutoSize = true;
-            this.l_currentPosition.Location = new System.Drawing.Point(9, 739);
+            this.l_currentPosition.Location = new System.Drawing.Point(142, 739);
             this.l_currentPosition.Name = "l_currentPosition";
             this.l_currentPosition.Size = new System.Drawing.Size(49, 13);
             this.l_currentPosition.TabIndex = 10;
@@ -237,27 +238,38 @@ namespace GPlay
             // l_trackLength
             // 
             this.l_trackLength.AutoSize = true;
-            this.l_trackLength.Location = new System.Drawing.Point(208, 739);
+            this.l_trackLength.Location = new System.Drawing.Point(215, 739);
             this.l_trackLength.Name = "l_trackLength";
             this.l_trackLength.Size = new System.Drawing.Size(68, 13);
             this.l_trackLength.TabIndex = 11;
             this.l_trackLength.Text = "TrackLength";
+            this.l_trackLength.Click += new System.EventHandler(this.l_trackLength_Click);
             // 
             // trackBar2
             // 
             this.trackBar2.LargeChange = 1;
-            this.trackBar2.Location = new System.Drawing.Point(766, 42);
+            this.trackBar2.Location = new System.Drawing.Point(767, 41);
             this.trackBar2.Maximum = 100;
             this.trackBar2.Name = "trackBar2";
             this.trackBar2.Size = new System.Drawing.Size(390, 45);
             this.trackBar2.TabIndex = 1;
             this.trackBar2.TickStyle = System.Windows.Forms.TickStyle.Both;
             // 
+            // l_separator_slash
+            // 
+            this.l_separator_slash.AutoSize = true;
+            this.l_separator_slash.Location = new System.Drawing.Point(197, 739);
+            this.l_separator_slash.Name = "l_separator_slash";
+            this.l_separator_slash.Size = new System.Drawing.Size(12, 13);
+            this.l_separator_slash.TabIndex = 12;
+            this.l_separator_slash.Text = "/";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 761);
+            this.Controls.Add(this.l_separator_slash);
             this.Controls.Add(this.trackBar2);
             this.Controls.Add(this.l_trackLength);
             this.Controls.Add(this.l_currentPosition);
@@ -312,6 +324,7 @@ namespace GPlay
         private bool isPaused = false;
         private bool isStopped = false;
         public TrackBar trackBar2;
+        private Label l_separator_slash;
     }
 }
 
