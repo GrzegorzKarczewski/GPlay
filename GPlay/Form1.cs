@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Configuration;
+using System.Drawing.Text;
 using System.IO;
+using System.Timers;
 using System.Windows.Forms;
 
 
@@ -10,13 +12,24 @@ namespace GPlay
 
     public partial class Form1 : Form
     {
+        // Global variables used in app
+        string defaultPlaylist = ConfigurationManager.AppSettings.Get("DefaultPlaylist");
+        string currentTrack;
+        string currentPlaylist;
+        string selectedFolder;
+        WMPLib.WindowsMediaPlayer mp3player = new WMPLib.WindowsMediaPlayer();
+        double currentTrackPosition = 0;
+        System.Timers.Timer myTimer;
+        int seconds = 0;
+        TimeSpan time; 
+
+
         public Form1()
         {
             InitializeComponent();
             ReadAllSettings();
             LoadDefaultPlaylist();
-
-
+        
         }
 
         private void LoadDefaultPlaylist()
@@ -29,13 +42,7 @@ namespace GPlay
             l_currentPlaylist.Text = defaultPlaylist;
         }
 
-        // Global variables used in app
-        string defaultPlaylist = ConfigurationManager.AppSettings.Get("DefaultPlaylist");
-        string currentTrack;
-        string currentPlaylist;
-        string selectedFolder;
-        WMPLib.WindowsMediaPlayer mp3player = new WMPLib.WindowsMediaPlayer();
-        double currentTrackPosition = 0;
+      
 
 
 
@@ -105,9 +112,40 @@ namespace GPlay
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            trackBar1.Value = 100;
-            //trackBar1.Value = mp3player.settings.volume;
+            trackBar1.Value = 0;
+            trackBar2.Value = 0;
+            trackBar2.LargeChange = 1;
+            trackBar2.SmallChange= 1;
+            trackBar2.TickFrequency = 1;
+            myTimer = new System.Timers.Timer();
+            myTimer.Interval = 1000;
+            myTimer.Elapsed += timer2_Tick;
 
+
+        }
+
+        // function for handling playstatechange for current track
+        private void mp3player_PlayStateChange()
+        {
+
+            if (isPlaying == true)
+            {
+                MessageBox.Show("test");
+              
+                myTimer.Start();
+                trackBar2.Value = 0;
+            }
+             if (isPaused == true)
+            {
+                myTimer.Stop();
+                MessageBox.Show("pause");
+
+            }
+            if (isStopped == true)
+            {
+                myTimer.Stop();
+                trackBar2.Value = 0;
+            }
         }
 
         private void buttonPlay_Click(object sender, EventArgs e)
@@ -121,6 +159,7 @@ namespace GPlay
                 mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
                 mp3player.settings.volume = 100;
                 mp3player.controls.play();
+                isPlaying= true;
 
                 tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
             }
@@ -128,6 +167,7 @@ namespace GPlay
             {
                 mp3player.controls.currentPosition = currentTrackPosition;
                 mp3player.controls.play();
+                isPlaying = true;
             }
         }
 
@@ -136,17 +176,44 @@ namespace GPlay
             // Sets position in current track globally so when resumed
             // program knows from where to play
             mp3player.controls.pause();
+            isPaused = true;
             currentTrackPosition = mp3player.controls.currentPosition;
         }
 
         private void buttonStop_Click(object sender, EventArgs e)
         {
             mp3player.controls.stop();
+            isStopped = true;
         }
 
 
-        private void timer1_Tick(object sender, EventArgs e)
+        private void timer2_Tick(object sender, ElapsedEventArgs e)
         {
+
+            //timer 1 tick event handler 
+            Invoke(new Action(() =>
+            {
+
+                if (isPlaying)
+                {
+                    // code below should be executed every Interval (1 sec)
+                    l_trackLength.Text = TimeSpan.FromSeconds((mp3player.currentMedia.duration/60)).ToString();
+                    
+                    trackBar2.Maximum = ((int)mp3player.currentMedia.duration);
+                    trackBar2.TickFrequency = 100/(int)mp3player.currentMedia.duration;
+                    
+                    if (!isPaused || !isStopped)
+                    {
+                        seconds += 1;
+                        trackBar2.Value = trackBar2.Value + 1;
+                    }
+                    l_currentPosition.Text = "";
+
+                    l_currentPosition.Text += TimeSpan.FromSeconds(seconds).ToString();
+
+                }
+                
+            })); 
 
         }
 
@@ -215,7 +282,9 @@ namespace GPlay
                 {
                     currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
                     mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
-                    mp3player.controls.play();
+                    //mp3player.controls.play();
+                    playFileAndSetOtherStuff();
+                   //timer2.Start();
                     tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
 
                 }
@@ -328,5 +397,24 @@ namespace GPlay
         {
             mp3player.settings.volume = trackBar1.Value;
         }
+    
+        private void playFileAndSetOtherStuff()
+        {
+            
+            
+            mp3player.controls.play();
+            isPlaying = true;
+            mp3player_PlayStateChange();
+
+            // l_trackLength.Text =  mp3player.currentMedia.duration.ToString();
+            // l_currentPosition.Text = timer2.ToString();
+
+        }
+
+
+
+
     }
+
+
 }

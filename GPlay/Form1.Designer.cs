@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace GPlay
 {
@@ -50,8 +51,12 @@ namespace GPlay
             this.l_playlist = new System.Windows.Forms.Label();
             this.l_currentPlaylist = new System.Windows.Forms.Label();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.l_currentPosition = new System.Windows.Forms.Label();
+            this.l_trackLength = new System.Windows.Forms.Label();
+            this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonPlay
@@ -101,14 +106,11 @@ namespace GPlay
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.playlistBox.FormattingEnabled = true;
-            this.playlistBox.Location = new System.Drawing.Point(16, 104);
+            this.playlistBox.Location = new System.Drawing.Point(0, 104);
             this.playlistBox.Name = "playlistBox";
-            this.playlistBox.Size = new System.Drawing.Size(1142, 628);
+            this.playlistBox.Size = new System.Drawing.Size(1184, 628);
             this.playlistBox.TabIndex = 6;
-            //this.playlistBox.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
-            this.playlistBox.MouseDoubleClick += new MouseEventHandler(playlistBox_MouseDoubleClick);
-
-
+            this.playlistBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.playlistBox_MouseDoubleClick);
             // 
             // fileToolStripMenuItem
             // 
@@ -122,14 +124,14 @@ namespace GPlay
             // openTrackToolStripMenuItem
             // 
             this.openTrackToolStripMenuItem.Name = "openTrackToolStripMenuItem";
-            this.openTrackToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openTrackToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.openTrackToolStripMenuItem.Text = "Open track";
             this.openTrackToolStripMenuItem.Click += new System.EventHandler(this.openTrackToolStripMenuItem_Click);
             // 
             // openPlaylistToolStripMenuItem
             // 
             this.openPlaylistToolStripMenuItem.Name = "openPlaylistToolStripMenuItem";
-            this.openPlaylistToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openPlaylistToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.openPlaylistToolStripMenuItem.Text = "Open playlist";
             this.openPlaylistToolStripMenuItem.Click += new System.EventHandler(this.openPlaylistToolStripMenuItem_Click);
             // 
@@ -223,11 +225,42 @@ namespace GPlay
             this.trackBar1.Value = 100;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_ValueChanged);
             // 
+            // l_currentPosition
+            // 
+            this.l_currentPosition.AutoSize = true;
+            this.l_currentPosition.Location = new System.Drawing.Point(9, 739);
+            this.l_currentPosition.Name = "l_currentPosition";
+            this.l_currentPosition.Size = new System.Drawing.Size(49, 13);
+            this.l_currentPosition.TabIndex = 10;
+            this.l_currentPosition.Text = "CurrPoss";
+            // 
+            // l_trackLength
+            // 
+            this.l_trackLength.AutoSize = true;
+            this.l_trackLength.Location = new System.Drawing.Point(208, 739);
+            this.l_trackLength.Name = "l_trackLength";
+            this.l_trackLength.Size = new System.Drawing.Size(68, 13);
+            this.l_trackLength.TabIndex = 11;
+            this.l_trackLength.Text = "TrackLength";
+            // 
+            // trackBar2
+            // 
+            this.trackBar2.LargeChange = 1;
+            this.trackBar2.Location = new System.Drawing.Point(766, 42);
+            this.trackBar2.Maximum = 100;
+            this.trackBar2.Name = "trackBar2";
+            this.trackBar2.Size = new System.Drawing.Size(390, 45);
+            this.trackBar2.TabIndex = 1;
+            this.trackBar2.TickStyle = System.Windows.Forms.TickStyle.Both;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 761);
+            this.Controls.Add(this.trackBar2);
+            this.Controls.Add(this.l_trackLength);
+            this.Controls.Add(this.l_currentPosition);
             this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.l_currentPlaylist);
             this.Controls.Add(this.l_playlist);
@@ -244,6 +277,7 @@ namespace GPlay
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -271,6 +305,13 @@ namespace GPlay
         private System.Windows.Forms.Label l_playlist;
         private System.Windows.Forms.Label l_currentPlaylist;
         private System.Windows.Forms.TrackBar trackBar1;
+        private Label l_currentPosition;
+        private Label l_trackLength;
+       // private Timer timer2;
+        private bool isPlaying = false;
+        private bool isPaused = false;
+        private bool isStopped = false;
+        public TrackBar trackBar2;
     }
 }
 
