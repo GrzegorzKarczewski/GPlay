@@ -133,11 +133,11 @@ namespace GPlay
 
             if (isPlaying == true)
             {
-                MessageBox.Show("test");
+                //MessageBox.Show("test");
               
                 myTimer.Start();
                 trackBar2.Value = 0;
-                l_currentPosition.Text= string.Empty;
+                //l_currentPosition.Text= string.Empty;
             }
              if (isPaused == true)
             {
@@ -173,12 +173,13 @@ namespace GPlay
                 isPlaying= true;
 
                 tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
+                mp3player_PlayStateChange();
             }
             else
             {
                 mp3player.controls.currentPosition = currentTrackPosition;
-                mp3player.controls.play();
                 isPlaying = true;
+                playFileAndSetOtherStuff();
             }
         }
 
@@ -188,6 +189,7 @@ namespace GPlay
             // program knows from where to play
             mp3player.controls.pause();
             isPaused = true;
+            mp3player_PlayStateChange();
             currentTrackPosition = mp3player.controls.currentPosition;
         }
 
@@ -296,6 +298,7 @@ namespace GPlay
                     currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
                     mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
                     playFileAndSetOtherStuff();
+                    isPlaying = true;
                     tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
 
                 }
