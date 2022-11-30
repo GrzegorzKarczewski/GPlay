@@ -21,7 +21,10 @@ namespace GPlay
         double currentTrackPosition = 0;
         System.Timers.Timer myTimer;
         int seconds = 0;
-        TimeSpan time; 
+        TimeSpan time;
+        private bool isPlaying = false;
+        private bool isPaused = false;
+        private bool isStopped = false;
 
 
         public Form1()
@@ -112,7 +115,7 @@ namespace GPlay
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            trackBar1.Value = 0;
+            trackBar1.Value = 100;
             trackBar2.Value = 0;
             trackBar2.LargeChange = 1;
             trackBar2.SmallChange= 1;
@@ -134,6 +137,7 @@ namespace GPlay
               
                 myTimer.Start();
                 trackBar2.Value = 0;
+                l_currentPosition.Text= string.Empty;
             }
              if (isPaused == true)
             {
@@ -143,8 +147,12 @@ namespace GPlay
             }
             if (isStopped == true)
             {
+                int seconds = 0;
+                l_currentPosition.Text = TimeSpan.FromSeconds(seconds).ToString();
                 myTimer.Stop();
                 trackBar2.Value = 0;
+               // l_currentPosition.Text= string.Empty;
+                mp3player.controls.currentPosition = 0;
             }
         }
 
@@ -187,6 +195,7 @@ namespace GPlay
         {
             mp3player.controls.stop();
             isStopped = true;
+            mp3player_PlayStateChange();
         }
 
 
@@ -212,8 +221,6 @@ namespace GPlay
 
                     l_currentPosition.Text += TimeSpan.FromSeconds(seconds).ToString();
                     // TODO : 1)
-                    // if i pause, the seconds still increment
-                    // need to fix that and stop trackbar
                     // 2)
                     // play next track if currentDuration reached trackbarmaximum
 
@@ -411,9 +418,6 @@ namespace GPlay
             mp3player.controls.play();
             isPlaying = true;
             mp3player_PlayStateChange();
-
-            // l_trackLength.Text =  mp3player.currentMedia.duration.ToString();
-            // l_currentPosition.Text = timer2.ToString();
 
         }
 

@@ -320,9 +320,7 @@ namespace GPlay
         private Label l_currentPosition;
         private Label l_trackLength;
        // private Timer timer2;
-        private bool isPlaying = false;
-        private bool isPaused = false;
-        private bool isStopped = false;
+      
         public TrackBar trackBar2;
         private Label l_separator_slash;
     }
