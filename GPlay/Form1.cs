@@ -1,15 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
-using System.Drawing.Text;
 using System.IO;
+using System.Security;
 using System.Timers;
 using System.Windows.Forms;
+
 
 
 namespace GPlay
 {
 
-
+    
     public partial class Form1 : Form
     {
         // Global variables used in app
@@ -25,12 +27,13 @@ namespace GPlay
         private bool isPlaying = false;
         private bool isPaused = false;
         private bool isStopped = false;
+        List<string> atrributes;
 
 
         public Form1()
         {
             InitializeComponent();
-            ReadAllSettings();
+            GSettings.ReadAllSettings();
             LoadDefaultPlaylist();
         
         }
@@ -44,73 +47,6 @@ namespace GPlay
             }
             l_currentPlaylist.Text = defaultPlaylist;
         }
-
-      
-
-
-
-        static void ReadAllSettings()
-        {
-            try
-            {
-                var appSettings = ConfigurationManager.AppSettings;
-
-                if (appSettings.Count == 0)
-                {
-                    Console.WriteLine("AppSettings is empty.");
-                }
-                else
-                {
-                    foreach (var key in appSettings.AllKeys)
-                    {
-                        Console.WriteLine("Key: {0} Value: {1}", key, appSettings[key]);
-                    }
-                }
-            }
-            catch (ConfigurationErrorsException)
-            {
-                Console.WriteLine("Error reading app settings");
-            }
-        }
-
-        static void ReadSetting(string key)
-        {
-            try
-            {
-                var appSettings = ConfigurationManager.AppSettings;
-                string result = appSettings[key] ?? "Not Found";
-                Console.WriteLine(result);
-
-            }
-            catch (ConfigurationErrorsException)
-            {
-                Console.WriteLine("Error reading app settings");
-            }
-        }
-
-        static void AddUpdateAppSettings(string key, string value)
-        {
-            try
-            {
-                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                var settings = configFile.AppSettings.Settings;
-                if (settings[key] == null)
-                {
-                    settings.Add(key, value);
-                }
-                else
-                {
-                    settings[key].Value = value;
-                }
-                configFile.Save(ConfigurationSaveMode.Modified);
-                ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
-            }
-            catch (ConfigurationErrorsException)
-            {
-                Console.WriteLine("Error writing app settings");
-            }
-        }
-
 
 
         private void Form1_Load(object sender, EventArgs e)
@@ -131,21 +67,21 @@ namespace GPlay
         private void mp3player_PlayStateChange()
         {
 
-            if (isPlaying == true)
+            if (isPlaying)
             {
-                //MessageBox.Show("test");
               
                 myTimer.Start();
-                trackBar2.Value = 0;
+                //trackBar2.Value = 0;
                 //l_currentPosition.Text= string.Empty;
-            }
-             if (isPaused == true)
-            {
-                myTimer.Stop();
-                MessageBox.Show("pause");
+                Text = currentTrack;  
 
             }
-            if (isStopped == true)
+            if (isPaused)
+            {
+                myTimer.Stop();
+
+            }
+            if (isStopped)
             {
                 int seconds = 0;
                 l_currentPosition.Text = TimeSpan.FromSeconds(seconds).ToString();
@@ -197,6 +133,7 @@ namespace GPlay
         {
             mp3player.controls.stop();
             isStopped = true;
+            mp3player.controls.currentPosition = 0;
             mp3player_PlayStateChange();
         }
 
@@ -205,6 +142,8 @@ namespace GPlay
         {
 
             //timer 1 tick event handler 
+            // timer was used to track media current playtime and set trackbar
+            // caused problems with media file being played with artifacts 
             Invoke(new Action(() =>
             {
 
@@ -215,13 +154,20 @@ namespace GPlay
                     
                     trackBar2.Maximum = ((int)mp3player.currentMedia.duration);
                     trackBar2.TickFrequency = 100/(int)mp3player.currentMedia.duration;
-                    
-                        seconds += 1;
-                        trackBar2.Value = trackBar2.Value + 1;
+                    //trackBar2.TickFrequency = (int)mp3player.currentMedia.duration;
+
+
+                    seconds += 1;
+                    trackBar2.Value = trackBar2.Value + 1;
                     
                     l_currentPosition.Text = "";
+                   // trackBar2.Value = (int)mp3player.controls.currentPosition;
+                    //mp3player.controls.currentPosition = trackBar2.Value; // dziala przewijanie ale takie powiazanie
+                    // powoduje sterowanie odtwarzania trackbarem co powoduje skipowanie muzyki
+                    //trackBar2.ValueChanged += moveInTrack;
+                    //l_currentPosition.Text += TimeSpan.FromSeconds(seconds).ToString();
+                    l_currentPosition.Text = (TimeSpan.FromSeconds((int)mp3player.controls.currentPosition)).ToString();
 
-                    l_currentPosition.Text += TimeSpan.FromSeconds(seconds).ToString();
                     // TODO : 1)
                     // 2)
                     // play next track if currentDuration reached trackbarmaximum
@@ -230,6 +176,11 @@ namespace GPlay
                 
             })); 
 
+        }
+
+        private void moveInTrack(object sender, EventArgs e)
+        {
+            mp3player.controls.currentPosition = trackBar2.Value;
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -348,7 +299,7 @@ namespace GPlay
                 // Saving playlist name to configfile
                 try
                 {
-                    AddUpdateAppSettings("DefaultPlaylist", saveFileDialog1.FileName);
+                    GSettings.AddUpdateAppSettings("DefaultPlaylist", saveFileDialog1.FileName);
                 }
                 catch
                 {
@@ -394,7 +345,7 @@ namespace GPlay
                 // show current playlist name
                 l_currentPlaylist.Text = openPlaylistFile.FileName;
                 //saving opened playlist as default so we have the same on reopening aplication
-                AddUpdateAppSettings("DefaultPlaylist", openPlaylistFile.FileName);
+                GSettings.AddUpdateAppSettings("DefaultPlaylist", openPlaylistFile.FileName);
             }
         }
 
@@ -413,18 +364,59 @@ namespace GPlay
         {
             mp3player.settings.volume = trackBar1.Value;
         }
-    
+
         private void playFileAndSetOtherStuff()
         {
-            
+
+           // l_mediatype.Text = mp3player.currentMedia.getAttributeName(); 
+           // MessageBox.Show(mp3player.currentMedia.getItemInfo("Artist"));
             
             mp3player.controls.play();
             isPlaying = true;
             mp3player_PlayStateChange();
+            l_mediatype.Text = mp3player.currentMedia.attributeCount.ToString();
+
+            int i = mp3player.currentMedia.attributeCount - 1;
+            string allatrrs;
+            atrributes = new List<string>();
+            while (i > 0)
+            {
+
+
+                atrributes.Add(mp3player.currentMedia.getAttributeName(i).ToString());
+                
+
+                i--;
+            }
+            l_bitrate.Text = mp3player.currentMedia.getItemInfo("bitrate");
+
+            foreach (var attrs in atrributes)
+            {
+
+                MessageBox.Show(mp3player.currentMedia.getItemInfo(attrs).ToString());
+            }
+
 
         }
 
         private void l_trackLength_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void trackBar2_MouseDown(object sender, MouseEventArgs e)
+        {
+            //mp3player.controls.currentPosition = trackBar2.Value;
+           // l_currentPosition.Text = mp3player.controls.currentPosition.ToString();
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            mp3player.controls.stop();
+            myTimer.Stop();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
         {
 
         }
