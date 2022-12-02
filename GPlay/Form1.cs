@@ -27,6 +27,7 @@ namespace GPlay
         private bool isPlaying = false;
         private bool isPaused = false;
         private bool isStopped = false;
+        private bool isLoaded = false;
         List<string> atrributes;
 
 
@@ -73,7 +74,7 @@ namespace GPlay
                 myTimer.Start();
                 //trackBar2.Value = 0;
                 //l_currentPosition.Text= string.Empty;
-                Text = currentTrack;  
+                Text = mp3player.currentMedia.getItemInfo("title");
 
             }
             if (isPaused)
@@ -153,14 +154,15 @@ namespace GPlay
                     l_trackLength.Text = TimeSpan.FromSeconds((mp3player.currentMedia.duration/60)).ToString();
                     
                     trackBar2.Maximum = ((int)mp3player.currentMedia.duration);
-                    trackBar2.TickFrequency = 100/(int)mp3player.currentMedia.duration;
-                    //trackBar2.TickFrequency = (int)mp3player.currentMedia.duration;
+                    //trackBar2.TickFrequency = 100/(int)mp3player.currentMedia.duration;
+                    trackBar2.TickFrequency = (int)mp3player.currentMedia.duration;
 
 
                     seconds += 1;
+                   
                     trackBar2.Value = trackBar2.Value + 1;
                     
-                    l_currentPosition.Text = "";
+                   // l_currentPosition.Text = "";
                    // trackBar2.Value = (int)mp3player.controls.currentPosition;
                     //mp3player.controls.currentPosition = trackBar2.Value; // dziala przewijanie ale takie powiazanie
                     // powoduje sterowanie odtwarzania trackbarem co powoduje skipowanie muzyki
@@ -367,35 +369,45 @@ namespace GPlay
 
         private void playFileAndSetOtherStuff()
         {
-
-           // l_mediatype.Text = mp3player.currentMedia.getAttributeName(); 
-           // MessageBox.Show(mp3player.currentMedia.getItemInfo("Artist"));
             
             mp3player.controls.play();
             isPlaying = true;
             mp3player_PlayStateChange();
-            l_mediatype.Text = mp3player.currentMedia.attributeCount.ToString();
+            System.Threading.Thread.Sleep(50);
+            isLoaded = true;
 
-            int i = mp3player.currentMedia.attributeCount - 1;
-            string allatrrs;
-            atrributes = new List<string>();
-            while (i > 0)
+
+            if (isLoaded) // 
             {
+                MessageBox.Show("isLoaded");
+                int i = mp3player.currentMedia.attributeCount - 1;
+                l_mediatype.Text = mp3player.currentMedia.attributeCount.ToString();
+                atrributes = new List<string>();
+                while (i > 0)
+                {
 
 
-                atrributes.Add(mp3player.currentMedia.getAttributeName(i).ToString());
-                
+                    atrributes.Add(mp3player.currentMedia.getAttributeName(i).ToString());
 
-                i--;
+                    i--;
+                }
+                string mediaType = mp3player.currentMedia.getItemInfo("FileType");
+               // l_mediatype.Text = mediaType.ToUpper();
+                string BitRate = mp3player.currentMedia.getItemInfo("BitRate");
+                //int bitrateInt = Int32.Parse(BitRate) / 1000;
+                BitRate = BitRate.Remove(BitRate.Length -  3) + "kbps";
+                // l_bitrate.Text = BitRate;
+                string TrackInfo = mediaType.ToUpper() + " | " + BitRate + " | ";// +
+                  //  (TimeSpan.FromSeconds((int)mp3player.controls.currentPosition)).ToString() + "| " + mp3player.currentMedia.duration.ToString();
+                l_mediatype.Text = TrackInfo;
+
+
+                foreach (var attrs in atrributes)
+                {
+
+                    MessageBox.Show(mp3player.currentMedia.getItemInfo(attrs).ToString());
+                }
             }
-            l_bitrate.Text = mp3player.currentMedia.getItemInfo("bitrate");
-
-            foreach (var attrs in atrributes)
-            {
-
-                MessageBox.Show(mp3player.currentMedia.getItemInfo(attrs).ToString());
-            }
-
 
         }
 

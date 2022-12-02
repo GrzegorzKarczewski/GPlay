@@ -51,13 +51,10 @@ namespace GPlay
             this.l_playlist = new System.Windows.Forms.Label();
             this.l_currentPlaylist = new System.Windows.Forms.Label();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.trackBar2 = new System.Windows.Forms.TrackBar();
+            this.l_mediatype = new System.Windows.Forms.Label();
             this.l_currentPosition = new System.Windows.Forms.Label();
             this.l_trackLength = new System.Windows.Forms.Label();
-            this.trackBar2 = new System.Windows.Forms.TrackBar();
-            this.l_separator_slash = new System.Windows.Forms.Label();
-            this.l_mediatype = new System.Windows.Forms.Label();
-            this.l_bitrate = new System.Windows.Forms.Label();
-            this.l_freq = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
@@ -229,25 +226,6 @@ namespace GPlay
             this.trackBar1.Value = 100;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_ValueChanged);
             // 
-            // l_currentPosition
-            // 
-            this.l_currentPosition.AutoSize = true;
-            this.l_currentPosition.Location = new System.Drawing.Point(130, 739);
-            this.l_currentPosition.Name = "l_currentPosition";
-            this.l_currentPosition.Size = new System.Drawing.Size(49, 13);
-            this.l_currentPosition.TabIndex = 10;
-            this.l_currentPosition.Text = "CurrPoss";
-            // 
-            // l_trackLength
-            // 
-            this.l_trackLength.AutoSize = true;
-            this.l_trackLength.Location = new System.Drawing.Point(203, 739);
-            this.l_trackLength.Name = "l_trackLength";
-            this.l_trackLength.Size = new System.Drawing.Size(68, 13);
-            this.l_trackLength.TabIndex = 11;
-            this.l_trackLength.Text = "TrackLength";
-            this.l_trackLength.Click += new System.EventHandler(this.l_trackLength_Click);
-            // 
             // trackBar2
             // 
             this.trackBar2.LargeChange = 1;
@@ -259,55 +237,44 @@ namespace GPlay
             this.trackBar2.TickStyle = System.Windows.Forms.TickStyle.Both;
             this.trackBar2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.trackBar2_MouseDown);
             // 
-            // l_separator_slash
-            // 
-            this.l_separator_slash.AutoSize = true;
-            this.l_separator_slash.Location = new System.Drawing.Point(185, 739);
-            this.l_separator_slash.Name = "l_separator_slash";
-            this.l_separator_slash.Size = new System.Drawing.Size(12, 13);
-            this.l_separator_slash.TabIndex = 12;
-            this.l_separator_slash.Text = "/";
-            // 
             // l_mediatype
             // 
             this.l_mediatype.AutoSize = true;
-            this.l_mediatype.Location = new System.Drawing.Point(9, 739);
+            this.l_mediatype.Location = new System.Drawing.Point(12, 739);
+            this.l_mediatype.Margin = new System.Windows.Forms.Padding(0);
             this.l_mediatype.Name = "l_mediatype";
-            this.l_mediatype.Size = new System.Drawing.Size(40, 13);
+            this.l_mediatype.Size = new System.Drawing.Size(30, 13);
             this.l_mediatype.TabIndex = 13;
-            this.l_mediatype.Text = "MType";
+            this.l_mediatype.Text = "MTP";
             this.l_mediatype.Click += new System.EventHandler(this.label1_Click);
             // 
-            // l_bitrate
+            // l_currentPosition
             // 
-            this.l_bitrate.AutoSize = true;
-            this.l_bitrate.Location = new System.Drawing.Point(50, 739);
-            this.l_bitrate.Name = "l_bitrate";
-            this.l_bitrate.Size = new System.Drawing.Size(36, 13);
-            this.l_bitrate.TabIndex = 14;
-            this.l_bitrate.Text = "bitrate";
+            this.l_currentPosition.AutoSize = true;
+            this.l_currentPosition.Location = new System.Drawing.Point(89, 739);
+            this.l_currentPosition.Name = "l_currentPosition";
+            this.l_currentPosition.Size = new System.Drawing.Size(35, 13);
+            this.l_currentPosition.TabIndex = 14;
+            this.l_currentPosition.Text = "label1";
             // 
-            // l_freq
+            // l_trackLength
             // 
-            this.l_freq.AutoSize = true;
-            this.l_freq.Location = new System.Drawing.Point(89, 739);
-            this.l_freq.Name = "l_freq";
-            this.l_freq.Size = new System.Drawing.Size(35, 13);
-            this.l_freq.TabIndex = 15;
-            this.l_freq.Text = "label3";
+            this.l_trackLength.AutoSize = true;
+            this.l_trackLength.Location = new System.Drawing.Point(163, 739);
+            this.l_trackLength.Name = "l_trackLength";
+            this.l_trackLength.Size = new System.Drawing.Size(35, 13);
+            this.l_trackLength.TabIndex = 15;
+            this.l_trackLength.Text = "label2";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 761);
-            this.Controls.Add(this.l_freq);
-            this.Controls.Add(this.l_bitrate);
-            this.Controls.Add(this.l_mediatype);
-            this.Controls.Add(this.l_separator_slash);
-            this.Controls.Add(this.trackBar2);
             this.Controls.Add(this.l_trackLength);
             this.Controls.Add(this.l_currentPosition);
+            this.Controls.Add(this.l_mediatype);
+            this.Controls.Add(this.trackBar2);
             this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.l_currentPlaylist);
             this.Controls.Add(this.l_playlist);
@@ -353,15 +320,12 @@ namespace GPlay
         private System.Windows.Forms.Label l_playlist;
         private System.Windows.Forms.Label l_currentPlaylist;
         private System.Windows.Forms.TrackBar trackBar1;
-        private Label l_currentPosition;
-        private Label l_trackLength;
        // private Timer timer2;
       
         public TrackBar trackBar2;
-        private Label l_separator_slash;
         private Label l_mediatype;
-        private Label l_bitrate;
-        private Label l_freq;
+        private Label l_currentPosition;
+        private Label l_trackLength;
     }
 }
 
