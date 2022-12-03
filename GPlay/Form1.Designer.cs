@@ -240,7 +240,7 @@ namespace GPlay
             // l_mediatype
             // 
             this.l_mediatype.AutoSize = true;
-            this.l_mediatype.Location = new System.Drawing.Point(12, 739);
+            this.l_mediatype.Location = new System.Drawing.Point(-3, 739);
             this.l_mediatype.Margin = new System.Windows.Forms.Padding(0);
             this.l_mediatype.Name = "l_mediatype";
             this.l_mediatype.Size = new System.Drawing.Size(30, 13);
@@ -260,7 +260,7 @@ namespace GPlay
             // l_trackLength
             // 
             this.l_trackLength.AutoSize = true;
-            this.l_trackLength.Location = new System.Drawing.Point(163, 739);
+            this.l_trackLength.Location = new System.Drawing.Point(151, 739);
             this.l_trackLength.Name = "l_trackLength";
             this.l_trackLength.Size = new System.Drawing.Size(35, 13);
             this.l_trackLength.TabIndex = 15;

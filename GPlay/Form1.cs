@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Security;
+using System.Threading;
 using System.Timers;
+using System.Transactions;
 using System.Windows.Forms;
 
 
@@ -23,11 +25,13 @@ namespace GPlay
         double currentTrackPosition = 0;
         System.Timers.Timer myTimer;
         int seconds = 0;
+        int currentDuration;
         TimeSpan time;
         private bool isPlaying = false;
         private bool isPaused = false;
         private bool isStopped = false;
         private bool isLoaded = false;
+        private bool isNextTrack = false;
         List<string> atrributes;
 
 
@@ -153,13 +157,19 @@ namespace GPlay
                     // code below should be executed every Interval (1 sec)
                     l_trackLength.Text = TimeSpan.FromSeconds((mp3player.currentMedia.duration/60)).ToString();
                     
-                    trackBar2.Maximum = ((int)mp3player.currentMedia.duration);
-                    //trackBar2.TickFrequency = 100/(int)mp3player.currentMedia.duration;
-                    trackBar2.TickFrequency = (int)mp3player.currentMedia.duration;
+                    trackBar2.Maximum = ((int)mp3player.currentMedia.duration + 1);
+                    trackBar2.TickFrequency = 100/(int)mp3player.currentMedia.duration;
+                    //trackBar2.TickFrequency = (int)mp3player.currentMedia.duration;
 
 
                     seconds += 1;
-                   
+                    if (isNextTrack)
+                    {
+                        trackBar2.Value = 0;
+                        // We are entering here only once to reset the trackbar 
+                        isNextTrack = false;
+                    }
+
                     trackBar2.Value = trackBar2.Value + 1;
                     
                    // l_currentPosition.Text = "";
@@ -173,6 +183,18 @@ namespace GPlay
                     // TODO : 1)
                     // 2)
                     // play next track if currentDuration reached trackbarmaximum
+
+                    currentDuration = (int)mp3player.currentMedia.duration;
+                    if (trackBar2.Value == trackBar2.Maximum - 1)
+                    {
+                        playlistBox.SelectedIndex = playlistBox.SelectedIndex + 1;
+                        playlistBox.SelectedItem = playlistBox.SelectedIndex;
+                        currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
+                        mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
+                        playFileAndSetOtherStuff();
+                        isPlaying = true;
+                        isNextTrack = true;
+                    }
 
                 }
                 
@@ -373,42 +395,70 @@ namespace GPlay
             mp3player.controls.play();
             isPlaying = true;
             mp3player_PlayStateChange();
-            System.Threading.Thread.Sleep(50);
-            isLoaded = true;
+            new Thread(delegate () {
+                mp3player.PlayStateChange += Mp3player_LoadInfo;
+            }).Start();
 
+            //.PlayStateChange += Mp3player_LoadInfo; 
+            
 
-            if (isLoaded) // 
+        }
+
+        private void Mp3player_LoadInfo(int NewState)
+        {
+
+            if (NewState == 3)
             {
-                MessageBox.Show("isLoaded");
-                int i = mp3player.currentMedia.attributeCount - 1;
-                l_mediatype.Text = mp3player.currentMedia.attributeCount.ToString();
-                atrributes = new List<string>();
-                while (i > 0)
+                Thread.Sleep(1000);
+                isLoaded = true;
+
+
+                if (isLoaded) // 
                 {
+                    //MessageBox.Show("isLoaded");
+                    try
+                    {
+                        int i = mp3player.currentMedia.attributeCount - 1;
+                        l_mediatype.Text = mp3player.currentMedia.attributeCount.ToString();
+                        atrributes = new List<string>();
+                        while (i > 0)
+                        {
 
 
-                    atrributes.Add(mp3player.currentMedia.getAttributeName(i).ToString());
+                            atrributes.Add(mp3player.currentMedia.getAttributeName(i).ToString());
+                            //  MessageBox.Show(mp3player.currentMedia.getAttributeName(i).ToString());
 
-                    i--;
-                }
-                string mediaType = mp3player.currentMedia.getItemInfo("FileType");
-               // l_mediatype.Text = mediaType.ToUpper();
-                string BitRate = mp3player.currentMedia.getItemInfo("BitRate");
-                //int bitrateInt = Int32.Parse(BitRate) / 1000;
-                BitRate = BitRate.Remove(BitRate.Length -  3) + "kbps";
-                // l_bitrate.Text = BitRate;
-                string TrackInfo = mediaType.ToUpper() + " | " + BitRate + " | ";// +
-                  //  (TimeSpan.FromSeconds((int)mp3player.controls.currentPosition)).ToString() + "| " + mp3player.currentMedia.duration.ToString();
-                l_mediatype.Text = TrackInfo;
+                            i--;
+                        }
+                        string mediaType = mp3player.currentMedia.getItemInfo("FileType");
+                        // l_mediatype.Text = mediaType.ToUpper();
+                        string BitRate = mp3player.currentMedia.getItemInfo("BitRate");
+                        //int bitrateInt = Int32.Parse(BitRate) / 1000;
+                        BitRate = BitRate.Remove(BitRate.Length - 3) + " kbps";
+                        // l_bitrate.Text = BitRate;
+                        string TrackInfo = mediaType.ToUpper() + " | " + BitRate + " | " + mp3player.currentMedia.getItemInfo("CurrentBitrate");// +
+                                                                                                                                                //  (TimeSpan.FromSeconds((int)mp3player.controls.currentPosition)).ToString() + "| " + mp3player.currentMedia.duration.ToString();
+                        l_mediatype.Text = TrackInfo;
 
 
-                foreach (var attrs in atrributes)
-                {
+                        foreach (var attrs in atrributes)
+                        {
 
-                    MessageBox.Show(mp3player.currentMedia.getItemInfo(attrs).ToString());
+                            // MessageBox.Show(mp3player.currentMedia.getItemInfo(attrs).ToString());
+                        }
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
 
+        }
+
+        private void Mp3player_PlayStateChange(int NewState)
+        {
+            throw new NotImplementedException();
         }
 
         private void l_trackLength_Click(object sender, EventArgs e)
