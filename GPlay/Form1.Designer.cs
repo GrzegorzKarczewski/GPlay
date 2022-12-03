@@ -33,7 +33,6 @@ namespace GPlay
         {
             this.buttonPlay = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.tB_currentTrack = new System.Windows.Forms.TextBox();
             this.buttonPause = new System.Windows.Forms.Button();
             this.buttonStop = new System.Windows.Forms.Button();
             this.playlistBox = new System.Windows.Forms.ListBox();
@@ -62,7 +61,7 @@ namespace GPlay
             // 
             // buttonPlay
             // 
-            this.buttonPlay.Location = new System.Drawing.Point(389, 42);
+            this.buttonPlay.Location = new System.Drawing.Point(217, 0);
             this.buttonPlay.Name = "buttonPlay";
             this.buttonPlay.Size = new System.Drawing.Size(75, 23);
             this.buttonPlay.TabIndex = 0;
@@ -74,16 +73,9 @@ namespace GPlay
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // tB_currentTrack
-            // 
-            this.tB_currentTrack.Location = new System.Drawing.Point(12, 45);
-            this.tB_currentTrack.Name = "tB_currentTrack";
-            this.tB_currentTrack.Size = new System.Drawing.Size(371, 20);
-            this.tB_currentTrack.TabIndex = 2;
-            // 
             // buttonPause
             // 
-            this.buttonPause.Location = new System.Drawing.Point(470, 41);
+            this.buttonPause.Location = new System.Drawing.Point(298, 0);
             this.buttonPause.Name = "buttonPause";
             this.buttonPause.Size = new System.Drawing.Size(75, 23);
             this.buttonPause.TabIndex = 3;
@@ -93,7 +85,7 @@ namespace GPlay
             // 
             // buttonStop
             // 
-            this.buttonStop.Location = new System.Drawing.Point(551, 41);
+            this.buttonStop.Location = new System.Drawing.Point(379, 0);
             this.buttonStop.Name = "buttonStop";
             this.buttonStop.Size = new System.Drawing.Size(75, 23);
             this.buttonStop.TabIndex = 4;
@@ -107,9 +99,9 @@ namespace GPlay
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.playlistBox.FormattingEnabled = true;
-            this.playlistBox.Location = new System.Drawing.Point(0, 104);
+            this.playlistBox.Location = new System.Drawing.Point(-12, 65);
             this.playlistBox.Name = "playlistBox";
-            this.playlistBox.Size = new System.Drawing.Size(1184, 628);
+            this.playlistBox.Size = new System.Drawing.Size(1184, 667);
             this.playlistBox.TabIndex = 6;
             this.playlistBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.playlistBox_MouseDoubleClick);
             // 
@@ -119,7 +111,7 @@ namespace GPlay
             this.openTrackToolStripMenuItem,
             this.openPlaylistToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 19);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openTrackToolStripMenuItem
@@ -143,7 +135,7 @@ namespace GPlay
             this.savePlaylistToolStripMenuItem,
             this.clearCurrentPlaylistToolStripMenuItem});
             this.playlistToolStripMenuItem.Name = "playlistToolStripMenuItem";
-            this.playlistToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.playlistToolStripMenuItem.Size = new System.Drawing.Size(56, 19);
             this.playlistToolStripMenuItem.Text = "Playlist";
             // 
             // createPlaylistToolStripMenuItem
@@ -172,7 +164,7 @@ namespace GPlay
             this.aboutToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aboutToolStripMenuItem1});
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(44, 19);
             this.aboutToolStripMenuItem.Text = "Help";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -185,20 +177,22 @@ namespace GPlay
             // 
             // menuStrip1
             // 
+            this.menuStrip1.AutoSize = false;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.playlistToolStripMenuItem,
             this.aboutToolStripMenuItem});
+            this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1184, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1184, 38);
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // l_playlist
             // 
             this.l_playlist.AutoSize = true;
-            this.l_playlist.Location = new System.Drawing.Point(9, 88);
+            this.l_playlist.Location = new System.Drawing.Point(-3, 49);
             this.l_playlist.Name = "l_playlist";
             this.l_playlist.Size = new System.Drawing.Size(81, 13);
             this.l_playlist.TabIndex = 7;
@@ -207,16 +201,17 @@ namespace GPlay
             // l_currentPlaylist
             // 
             this.l_currentPlaylist.AutoSize = true;
-            this.l_currentPlaylist.Location = new System.Drawing.Point(89, 88);
+            this.l_currentPlaylist.Location = new System.Drawing.Point(70, 49);
             this.l_currentPlaylist.Name = "l_currentPlaylist";
             this.l_currentPlaylist.Size = new System.Drawing.Size(35, 13);
             this.l_currentPlaylist.TabIndex = 8;
             this.l_currentPlaylist.Text = "label2";
+            this.l_currentPlaylist.Click += new System.EventHandler(this.l_currentPlaylist_Click);
             // 
             // trackBar1
             // 
             this.trackBar1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.trackBar1.Location = new System.Drawing.Point(662, 45);
+            this.trackBar1.Location = new System.Drawing.Point(604, 0);
             this.trackBar1.Maximum = 100;
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Size = new System.Drawing.Size(81, 45);
@@ -229,10 +224,10 @@ namespace GPlay
             // trackBar2
             // 
             this.trackBar2.LargeChange = 1;
-            this.trackBar2.Location = new System.Drawing.Point(767, 41);
+            this.trackBar2.Location = new System.Drawing.Point(703, 0);
             this.trackBar2.Maximum = 100;
             this.trackBar2.Name = "trackBar2";
-            this.trackBar2.Size = new System.Drawing.Size(390, 45);
+            this.trackBar2.Size = new System.Drawing.Size(469, 45);
             this.trackBar2.TabIndex = 1;
             this.trackBar2.TickStyle = System.Windows.Forms.TickStyle.Both;
             this.trackBar2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.trackBar2_MouseDown);
@@ -281,7 +276,6 @@ namespace GPlay
             this.Controls.Add(this.playlistBox);
             this.Controls.Add(this.buttonStop);
             this.Controls.Add(this.buttonPause);
-            this.Controls.Add(this.tB_currentTrack);
             this.Controls.Add(this.buttonPlay);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -302,7 +296,6 @@ namespace GPlay
 
         private System.Windows.Forms.Button buttonPlay;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.TextBox tB_currentTrack;
         private System.Windows.Forms.Button buttonPause;
         private System.Windows.Forms.Button buttonStop;
         private System.Windows.Forms.ListBox playlistBox;

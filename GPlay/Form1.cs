@@ -40,6 +40,9 @@ namespace GPlay
             InitializeComponent();
             GSettings.ReadAllSettings();
             LoadDefaultPlaylist();
+            l_mediatype.Text = string.Empty;
+            l_currentPosition.Text = string.Empty;
+            l_trackLength.Text= string.Empty;
         
         }
 
@@ -76,7 +79,6 @@ namespace GPlay
             {
               
                 myTimer.Start();
-                Text = mp3player.currentMedia.getItemInfo("title");
 
             }
             if (isPaused)
@@ -103,16 +105,25 @@ namespace GPlay
             mp3player.controls.currentPosition = currentTrackPosition;
             if (currentTrackPosition == 0)
             {
+                trackBar2.Value = 0;
+
                 // This code ensures that when selected with mouse
                 // we can still unpause it with play button
+                //currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
+                // mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
+                playlistBox.SelectedIndex = 0;
+                playlistBox.SelectedItem = playlistBox.SelectedIndex;
                 currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
-                mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
                 mp3player.settings.volume = 100;
-                mp3player.controls.play();
-                isPlaying= true;
-
-                tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
+                playFileAndSetOtherStuff();
+                isPlaying = true;
+                new Thread(delegate () {
+                    mp3player.PlayStateChange += Mp3player_LoadInfo;
+                }).Start();
+                //.Text = currentTrack.Remove(currentTrack.Length - 4);
                 mp3player_PlayStateChange();
+                //Text = mp3player.currentMedia.getItemInfo("title");
+
             }
             else
             {
@@ -153,10 +164,10 @@ namespace GPlay
                 if (!isPaused && !isStopped)
                 {
                     // code below should be executed every Interval (1 sec)
-                    l_trackLength.Text = TimeSpan.FromSeconds((mp3player.currentMedia.duration/60)).ToString();
+                    //l_trackLength.Text = TimeSpan.FromSeconds((mp3player.currentMedia.duration/60)).ToString();
                     
-                    trackBar2.Maximum = ((int)mp3player.currentMedia.duration + 1);
-                    trackBar2.TickFrequency = 100/(int)mp3player.currentMedia.duration;
+                   // trackBar2.Maximum = ((int)mp3player.currentMedia.duration + 1);
+                    //trackBar2.TickFrequency = 100/(int)mp3player.currentMedia.duration;
                     //trackBar2.TickFrequency = (int)mp3player.currentMedia.duration;
 
 
@@ -174,11 +185,8 @@ namespace GPlay
                     //l_currentPosition.Text += TimeSpan.FromSeconds(seconds).ToString();
                     l_currentPosition.Text = (TimeSpan.FromSeconds((int)mp3player.controls.currentPosition)).ToString();
 
-                    // TODO : 1)
-                    // 2)
-                    // play next track if currentDuration reached trackbarmaximum
+               
 
-                    currentDuration = (int)mp3player.currentMedia.duration;
                     // This part of code is responsible for changing to next track on the list
                     if (trackBar2.Value == trackBar2.Maximum - 1)
                     {
@@ -186,6 +194,7 @@ namespace GPlay
                      
                         // Conditions needed to check if its last track on the list
                         // if it is, skip to first
+                        // We can put this into function later for a user to choose this if they want
                         if (playlistBox.SelectedIndex == playlistLength )
                         {
                             playlistBox.SelectedIndex = 0;
@@ -243,7 +252,7 @@ namespace GPlay
             if (openMusicFile.ShowDialog() == DialogResult.OK)
             {
 
-                tB_currentTrack.Text = openMusicFile.FileName;
+                //tB_currentTrack.Text = openMusicFile.FileName;
                 currentTrack = openMusicFile.FileName;
 
             }
@@ -286,7 +295,7 @@ namespace GPlay
                     mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
                     playFileAndSetOtherStuff();
                     isPlaying = true;
-                    tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
+                   // tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
 
                 }
             }
@@ -406,6 +415,8 @@ namespace GPlay
             
             mp3player.controls.play();
             isPlaying = true;
+            seconds = 0;
+            trackBar2.Value = 0;
             mp3player_PlayStateChange();
             
             // Starting a seperate thread and wait for 1000ms for track to load
@@ -413,6 +424,7 @@ namespace GPlay
             new Thread(delegate () {
                 mp3player.PlayStateChange += Mp3player_LoadInfo;
             }).Start();
+            
             
 
         }
@@ -422,7 +434,7 @@ namespace GPlay
 
             if (NewState == 3)
             {
-                Thread.Sleep(1000);
+                //Thread.Sleep(200);
                 isLoaded = true;
 
 
@@ -430,6 +442,12 @@ namespace GPlay
                 {
                     try
                     {
+
+                        l_trackLength.Text = TimeSpan.FromSeconds((mp3player.currentMedia.duration )).ToString();
+
+                        trackBar2.Maximum = ((int)mp3player.currentMedia.duration + 1);
+                        trackBar2.TickFrequency = 100 / (int)mp3player.currentMedia.duration;
+
                         int i = mp3player.currentMedia.attributeCount - 1;
                         l_mediatype.Text = mp3player.currentMedia.attributeCount.ToString();
                         atrributes = new List<string>();
@@ -443,6 +461,8 @@ namespace GPlay
                         BitRate = BitRate.Remove(BitRate.Length - 3) + " kbps";
                         string TrackInfo = mediaType.ToUpper() + " | " + BitRate + " | " + mp3player.currentMedia.getItemInfo("CurrentBitrate");// +                                                                                                     
                         l_mediatype.Text = TrackInfo;
+                        Text = mp3player.currentMedia.getItemInfo("title");
+
 
 
                         foreach (var attrs in atrributes)
@@ -482,6 +502,11 @@ namespace GPlay
         }
 
         private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void l_currentPlaylist_Click(object sender, EventArgs e)
         {
 
         }
