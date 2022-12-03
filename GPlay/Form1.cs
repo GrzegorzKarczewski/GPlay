@@ -76,8 +76,6 @@ namespace GPlay
             {
               
                 myTimer.Start();
-                //trackBar2.Value = 0;
-                //l_currentPosition.Text= string.Empty;
                 Text = mp3player.currentMedia.getItemInfo("title");
 
             }
@@ -172,10 +170,6 @@ namespace GPlay
 
                     trackBar2.Value = trackBar2.Value + 1;
                     
-                   // l_currentPosition.Text = "";
-                   // trackBar2.Value = (int)mp3player.controls.currentPosition;
-                    //mp3player.controls.currentPosition = trackBar2.Value; // dziala przewijanie ale takie powiazanie
-                    // powoduje sterowanie odtwarzania trackbarem co powoduje skipowanie muzyki
                     //trackBar2.ValueChanged += moveInTrack;
                     //l_currentPosition.Text += TimeSpan.FromSeconds(seconds).ToString();
                     l_currentPosition.Text = (TimeSpan.FromSeconds((int)mp3player.controls.currentPosition)).ToString();
@@ -185,15 +179,33 @@ namespace GPlay
                     // play next track if currentDuration reached trackbarmaximum
 
                     currentDuration = (int)mp3player.currentMedia.duration;
+                    // This part of code is responsible for changing to next track on the list
                     if (trackBar2.Value == trackBar2.Maximum - 1)
                     {
-                        playlistBox.SelectedIndex = playlistBox.SelectedIndex + 1;
-                        playlistBox.SelectedItem = playlistBox.SelectedIndex;
-                        currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
-                        mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
-                        playFileAndSetOtherStuff();
-                        isPlaying = true;
-                        isNextTrack = true;
+                        int playlistLength = playlistBox.Items.Count -1;
+                     
+                        // Conditions needed to check if its last track on the list
+                        // if it is, skip to first
+                        if (playlistBox.SelectedIndex == playlistLength )
+                        {
+                            playlistBox.SelectedIndex = 0;
+                            playlistBox.SelectedItem = playlistBox.SelectedIndex;
+                            currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
+                            mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
+                            playFileAndSetOtherStuff();
+                            isPlaying = true;
+                            isNextTrack = true;
+                        }
+                        else
+                        {
+                            playlistBox.SelectedIndex = playlistBox.SelectedIndex + 1;
+                            playlistBox.SelectedItem = playlistBox.SelectedIndex;
+                            currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
+                            mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
+                            playFileAndSetOtherStuff();
+                            isPlaying = true;
+                            isNextTrack = true;
+                        }
                     }
 
                 }
@@ -395,11 +407,12 @@ namespace GPlay
             mp3player.controls.play();
             isPlaying = true;
             mp3player_PlayStateChange();
+            
+            // Starting a seperate thread and wait for 1000ms for track to load
+            // This was needed when tracks change when they end
             new Thread(delegate () {
                 mp3player.PlayStateChange += Mp3player_LoadInfo;
             }).Start();
-
-            //.PlayStateChange += Mp3player_LoadInfo; 
             
 
         }
@@ -415,7 +428,6 @@ namespace GPlay
 
                 if (isLoaded) // 
                 {
-                    //MessageBox.Show("isLoaded");
                     try
                     {
                         int i = mp3player.currentMedia.attributeCount - 1;
@@ -423,27 +435,18 @@ namespace GPlay
                         atrributes = new List<string>();
                         while (i > 0)
                         {
-
-
                             atrributes.Add(mp3player.currentMedia.getAttributeName(i).ToString());
-                            //  MessageBox.Show(mp3player.currentMedia.getAttributeName(i).ToString());
-
                             i--;
                         }
                         string mediaType = mp3player.currentMedia.getItemInfo("FileType");
-                        // l_mediatype.Text = mediaType.ToUpper();
                         string BitRate = mp3player.currentMedia.getItemInfo("BitRate");
-                        //int bitrateInt = Int32.Parse(BitRate) / 1000;
                         BitRate = BitRate.Remove(BitRate.Length - 3) + " kbps";
-                        // l_bitrate.Text = BitRate;
-                        string TrackInfo = mediaType.ToUpper() + " | " + BitRate + " | " + mp3player.currentMedia.getItemInfo("CurrentBitrate");// +
-                                                                                                                                                //  (TimeSpan.FromSeconds((int)mp3player.controls.currentPosition)).ToString() + "| " + mp3player.currentMedia.duration.ToString();
+                        string TrackInfo = mediaType.ToUpper() + " | " + BitRate + " | " + mp3player.currentMedia.getItemInfo("CurrentBitrate");// +                                                                                                     
                         l_mediatype.Text = TrackInfo;
 
 
                         foreach (var attrs in atrributes)
                         {
-
                             // MessageBox.Show(mp3player.currentMedia.getItemInfo(attrs).ToString());
                         }
                     }
