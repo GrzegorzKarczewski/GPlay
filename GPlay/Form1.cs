@@ -26,6 +26,7 @@ namespace GPlay
         System.Timers.Timer myTimer;
         int seconds = 0;
         int currentDuration;
+
         TimeSpan time;
         private bool isPlaying = false;
         private bool isPaused = false;
@@ -43,6 +44,10 @@ namespace GPlay
             l_mediatype.Text = string.Empty;
             l_currentPosition.Text = string.Empty;
             l_trackLength.Text = string.Empty;
+            tabControl1 = new TabControl();
+            tabPage1.Controls.Add(playlistBox);
+            playlistBox.Dock = DockStyle.Fill;
+            tabPage1.Text = defaultPlaylist;
 
         }
 
@@ -53,7 +58,7 @@ namespace GPlay
             {
                 playlistBox.Items.Add(line);
             }
-            l_currentPlaylist.Text = defaultPlaylist;
+           // l_currentPlaylist.Text = defaultPlaylist;
         }
 
 
@@ -389,7 +394,7 @@ namespace GPlay
                 }
 
                 // show current playlist name
-                l_currentPlaylist.Text = openPlaylistFile.FileName;
+                //l_currentPlaylist.Text = openPlaylistFile.FileName;
                 //saving opened playlist as default so we have the same on reopening aplication
                 GSettings.AddUpdateAppSettings("DefaultPlaylist", openPlaylistFile.FileName);
             }
@@ -528,6 +533,7 @@ namespace GPlay
         {
             if (playlistBox.Items.Count > 0)
             {
+                
                 playlistBox.SelectedIndex = playlistBox.SelectedIndex + 1;
                 playlistBox.SelectedItem = playlistBox.SelectedIndex;
                 currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
@@ -538,7 +544,10 @@ namespace GPlay
 
         }
 
+        private void tabPage1_Click(object sender, EventArgs e)
+        {
 
+        }
     }
 
 

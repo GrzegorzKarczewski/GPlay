@@ -37,8 +37,6 @@ namespace GPlay
             this.buttonStop = new System.Windows.Forms.Button();
             this.playlistBox = new System.Windows.Forms.ListBox();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.l_playlist = new System.Windows.Forms.Label();
-            this.l_currentPlaylist = new System.Windows.Forms.Label();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.l_mediatype = new System.Windows.Forms.Label();
             this.l_currentPosition = new System.Windows.Forms.Label();
@@ -57,11 +55,15 @@ namespace GPlay
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.b_prev = new System.Windows.Forms.Button();
             this.b_next = new System.Windows.Forms.Button();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            this.tabControl1.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonPlay
@@ -110,25 +112,6 @@ namespace GPlay
             this.playlistBox.TabIndex = 6;
             this.playlistBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.playlistBox_MouseDoubleClick);
             // 
-            // l_playlist
-            // 
-            this.l_playlist.AutoSize = true;
-            this.l_playlist.Location = new System.Drawing.Point(-3, 49);
-            this.l_playlist.Name = "l_playlist";
-            this.l_playlist.Size = new System.Drawing.Size(81, 13);
-            this.l_playlist.TabIndex = 7;
-            this.l_playlist.Text = "Current playlist: ";
-            // 
-            // l_currentPlaylist
-            // 
-            this.l_currentPlaylist.AutoSize = true;
-            this.l_currentPlaylist.Location = new System.Drawing.Point(70, 49);
-            this.l_currentPlaylist.Name = "l_currentPlaylist";
-            this.l_currentPlaylist.Size = new System.Drawing.Size(35, 13);
-            this.l_currentPlaylist.TabIndex = 8;
-            this.l_currentPlaylist.Text = "label2";
-            this.l_currentPlaylist.Click += new System.EventHandler(this.l_currentPlaylist_Click);
-            // 
             // trackBar2
             // 
             this.trackBar2.LargeChange = 1;
@@ -137,7 +120,7 @@ namespace GPlay
             this.trackBar2.Name = "trackBar2";
             this.trackBar2.Size = new System.Drawing.Size(469, 45);
             this.trackBar2.TabIndex = 1;
-            this.trackBar2.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.trackBar2.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBar2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.trackBar2_MouseDown);
             // 
             // l_mediatype
@@ -298,11 +281,45 @@ namespace GPlay
             this.b_next.UseVisualStyleBackColor = true;
             this.b_next.Click += new System.EventHandler(this.b_next_Click);
             // 
+            // tabControl1
+            // 
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Location = new System.Drawing.Point(0, 41);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(1184, 691);
+            this.tabControl1.TabIndex = 19;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(1176, 665);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "tabPage1";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabPage1.Click += new System.EventHandler(this.tabPage1_Click);
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(1164, 529);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "tabPage2";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 761);
+            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.b_next);
             this.Controls.Add(this.b_prev);
             this.Controls.Add(this.l_trackLength);
@@ -310,8 +327,6 @@ namespace GPlay
             this.Controls.Add(this.l_mediatype);
             this.Controls.Add(this.trackBar2);
             this.Controls.Add(this.trackBar1);
-            this.Controls.Add(this.l_currentPlaylist);
-            this.Controls.Add(this.l_playlist);
             this.Controls.Add(this.playlistBox);
             this.Controls.Add(this.buttonStop);
             this.Controls.Add(this.buttonPause);
@@ -329,6 +344,7 @@ namespace GPlay
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            this.tabControl1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -342,8 +358,6 @@ namespace GPlay
         private System.Windows.Forms.Button buttonStop;
         private System.Windows.Forms.ListBox playlistBox;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
-        private System.Windows.Forms.Label l_playlist;
-        private System.Windows.Forms.Label l_currentPlaylist;
        // private Timer timer2;
       
         public TrackBar trackBar2;
@@ -364,6 +378,9 @@ namespace GPlay
         private TrackBar trackBar1;
         private Button b_prev;
         private Button b_next;
+        private TabPage tabPage1;
+        private TabPage tabPage2;
+        protected internal TabControl tabControl1;
     }
 }
 
