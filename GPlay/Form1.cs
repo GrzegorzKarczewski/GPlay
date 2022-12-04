@@ -27,14 +27,14 @@ namespace GPlay
         int seconds = 0;
         int currentDuration;
 
-        TimeSpan time;
         private bool isPlaying = false;
         private bool isPaused = false;
         private bool isStopped = false;
         private bool isLoaded = false;
         private bool isNextTrack = false;
+        private bool isDefaultPlaylistLoaded = false;
         List<string> atrributes;
-
+        private bool isOtherPlaylistLoaded = false;
 
         public Form1()
         {
@@ -44,7 +44,11 @@ namespace GPlay
             l_mediatype.Text = string.Empty;
             l_currentPosition.Text = string.Empty;
             l_trackLength.Text = string.Empty;
-            tabControl1 = new TabControl();
+            //tabControl1 = new TabControl(); // this line of code has me spent few hours looking for a problem why second tab wouldnt show.
+            // When i saw this and realize i'm creating a new instance of tabcontrol1
+            // instead of previous one i understood that i'm refering to different object then intended 
+            // leaving this comment as a reminder
+
             tabPage1.Controls.Add(playlistBox);
             playlistBox.Dock = DockStyle.Fill;
             tabPage1.Text = defaultPlaylist;
@@ -53,12 +57,16 @@ namespace GPlay
 
         private void LoadDefaultPlaylist()
         {
-            string[] lines = System.IO.File.ReadAllLines(defaultPlaylist);
-            foreach (string line in lines)
+            try
             {
-                playlistBox.Items.Add(line);
+                string[] lines = System.IO.File.ReadAllLines(defaultPlaylist);
+                foreach (string line in lines)
+                {
+                    playlistBox.Items.Add(line);
+                }
+                isDefaultPlaylistLoaded = true;
             }
-           // l_currentPlaylist.Text = defaultPlaylist;
+            catch { }
         }
 
 
@@ -291,6 +299,7 @@ namespace GPlay
         // private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         private void playlistBox_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+
             if (playlistBox.Items.Count > 0)
             {
                 int index = this.playlistBox.IndexFromPoint(e.Location);
@@ -305,6 +314,7 @@ namespace GPlay
 
                 }
             }
+
         }
 
         private void savePlaylistToolStripMenuItem_Click(object sender, EventArgs e)
@@ -382,23 +392,88 @@ namespace GPlay
 
             if (openPlaylistFile.ShowDialog() == DialogResult.OK)
             {
-
-                if (playlistBox.Items.Count > 0)
+                if (isOtherPlaylistLoaded)
                 {
-                    playlistBox.Items.Clear();
+                    if (playlistBox.Items.Count > 0)
+                    {
+                        playlistBox.Items.Clear();
+                    }
+                    string[] lines = System.IO.File.ReadAllLines(openPlaylistFile.FileName);
+                    foreach (string line in lines)
+                    {
+                        playlistBox.Items.Add(line);
+                    }
+
+                    // show current playlist name
+                    //l_currentPlaylist.Text = openPlaylistFile.FileName;
+                    //saving opened playlist as default so we have the same on reopening aplication
+                    GSettings.AddUpdateAppSettings("DefaultPlaylist", openPlaylistFile.FileName);
                 }
-                string[] lines = System.IO.File.ReadAllLines(openPlaylistFile.FileName);
-                foreach (string line in lines)
+                else if (!isOtherPlaylistLoaded)
                 {
-                    playlistBox.Items.Add(line);
+                    if (isDefaultPlaylistLoaded)
+                    {
+
+                        // Creating seperate playlistbox and TABPage
+                        System.Windows.Forms.ListBox playlistBoxTwo;
+                        playlistBoxTwo = new System.Windows.Forms.ListBox();
+                        playlistBoxTwo.Dock = DockStyle.Fill;
+                        playlistBoxTwo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            |           System.Windows.Forms.AnchorStyles.Left)
+            |            System.Windows.Forms.AnchorStyles.Right)));
+                        playlistBoxTwo.FormattingEnabled = true;
+                        playlistBoxTwo.Location = new System.Drawing.Point(0, 65);
+                        playlistBoxTwo.Name = "playlistBoxTwo";
+                        playlistBoxTwo.Size = new System.Drawing.Size(1184, 667);
+                        playlistBoxTwo.TabIndex = 6;
+                        playlistBoxTwo.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.playlistBox_MouseDoubleClick);
+
+
+
+                        TabPage tabSecondPlaylist = new TabPage("SecondPlaylist");
+                        //tabControl1.Controls.Add(tabSecondPlaylist);
+                        //this.Controls.Add(tabControl1);
+
+                        tabSecondPlaylist.Location = new System.Drawing.Point(8, 44); // it was 4,22
+                        //tabSecondPlaylist.Name = "tabSecondPlaylist";
+                        tabSecondPlaylist.Padding = new System.Windows.Forms.Padding(3);
+                        tabSecondPlaylist.Size = new System.Drawing.Size(1164, 529);
+                        tabSecondPlaylist.TabIndex = 1;
+                        tabSecondPlaylist.Text = "";
+                        tabSecondPlaylist.UseVisualStyleBackColor = true;
+                        tabSecondPlaylist.ForeColor = System.Drawing.Color.Azure;
+                        //
+                        tabSecondPlaylist.Controls.Add(playlistBoxTwo);
+                        tabControl1.TabPages.Add(tabSecondPlaylist);
+                       // tabControl1.Controls.Add(tabSecondPlaylist);
+
+                        tabSecondPlaylist.BringToFront();
+
+
+                        // populating playlist
+                        if (playlistBoxTwo.Items.Count > 0)
+                        {
+                            playlistBoxTwo.Items.Clear();
+                        }
+                        string[] lines = System.IO.File.ReadAllLines(openPlaylistFile.FileName);
+                        foreach (string line in lines)
+                        {
+                            playlistBoxTwo.Items.Add(line);
+                        }
+                        tabSecondPlaylist.Text = openPlaylistFile.FileName;
+                        MessageBox.Show(openPlaylistFile.FileName);
+
+                        // show current playlist name
+                        //l_currentPlaylist.Text = openPlaylistFile.FileName;
+                        //saving opened playlist as default so we have the same on reopening aplication
+                        //GSettings.AddUpdateAppSettings("DefaultPlaylist", openPlaylistFile.FileName);
+
+                    }
                 }
 
-                // show current playlist name
-                //l_currentPlaylist.Text = openPlaylistFile.FileName;
-                //saving opened playlist as default so we have the same on reopening aplication
-                GSettings.AddUpdateAppSettings("DefaultPlaylist", openPlaylistFile.FileName);
             }
         }
+    
 
 
 
