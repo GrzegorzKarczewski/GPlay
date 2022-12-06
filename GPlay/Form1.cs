@@ -7,9 +7,6 @@ using System.Threading;
 using System.Timers;
 using System.Transactions;
 using System.Windows.Forms;
-
-
-
 namespace GPlay
 {
 
@@ -35,6 +32,8 @@ namespace GPlay
         private bool isDefaultPlaylistLoaded = false;
         List<string> atrributes;
         private bool isOtherPlaylistLoaded = false;
+        System.Windows.Forms.ListBox playlistBoxTwo;
+        System.Windows.Forms.ListBox ActivePlaylistbox;
 
         public Form1()
         {
@@ -48,10 +47,12 @@ namespace GPlay
             // When i saw this and realize i'm creating a new instance of tabcontrol1
             // instead of previous one i understood that i'm refering to different object then intended 
             // leaving this comment as a reminder
-
+            ActivePlaylistbox = new ListBox();
             tabPage1.Controls.Add(playlistBox);
             playlistBox.Dock = DockStyle.Fill;
             tabPage1.Text = defaultPlaylist;
+
+           
 
         }
 
@@ -81,6 +82,7 @@ namespace GPlay
             myTimer.Interval = 1000;
             myTimer.Elapsed += timer2_Tick;
 
+          
 
         }
 
@@ -101,7 +103,7 @@ namespace GPlay
             }
             if (isStopped)
             {
-                int seconds = 0;
+                 int seconds = 0;
                 l_currentPosition.Text = TimeSpan.FromSeconds(seconds).ToString();
                 myTimer.Stop();
                 trackBar2.Value = 0;
@@ -175,6 +177,10 @@ namespace GPlay
             Invoke(new Action(() =>
             {
 
+                // Setting active playlistbox
+
+
+                
                 if (!isPaused && !isStopped)
                 {
                     // code below should be executed every Interval (1 sec)
@@ -204,16 +210,16 @@ namespace GPlay
                     // This part of code is responsible for changing to next track on the list
                     if (trackBar2.Value == trackBar2.Maximum - 1)
                     {
-                        int playlistLength = playlistBox.Items.Count - 1;
+                        int playlistLength = ActivePlaylistbox.Items.Count - 1;
 
                         // Conditions needed to check if its last track on the list
                         // if it is, skip to first
                         // We can put this into function later for a user to choose this if they want
-                        if (playlistBox.SelectedIndex == playlistLength)
+                        if (ActivePlaylistbox.SelectedIndex == playlistLength)
                         {
-                            playlistBox.SelectedIndex = 0;
-                            playlistBox.SelectedItem = playlistBox.SelectedIndex;
-                            currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
+                            ActivePlaylistbox.SelectedIndex = 0;
+                            ActivePlaylistbox.SelectedItem = ActivePlaylistbox.SelectedIndex;
+                            currentTrack = ActivePlaylistbox.GetItemText(ActivePlaylistbox.SelectedItem);
                             mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
                             playFileAndSetOtherStuff();
                             isPlaying = true;
@@ -221,9 +227,9 @@ namespace GPlay
                         }
                         else
                         {
-                            playlistBox.SelectedIndex = playlistBox.SelectedIndex + 1;
-                            playlistBox.SelectedItem = playlistBox.SelectedIndex;
-                            currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
+                            ActivePlaylistbox.SelectedIndex = ActivePlaylistbox.SelectedIndex + 1;
+                            ActivePlaylistbox.SelectedItem = ActivePlaylistbox.SelectedIndex;
+                            currentTrack = playlistBox.GetItemText(ActivePlaylistbox.SelectedItem);
                             mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
                             playFileAndSetOtherStuff();
                             isPlaying = true;
@@ -299,18 +305,32 @@ namespace GPlay
         // private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         private void playlistBox_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-
-            if (playlistBox.Items.Count > 0)
+            // zrobic zeby druga playlista korzystala z tego samego eventu
+            //ref ListBox activePlaylistBox =
+            if (tabControl1.SelectedTab == tabControl1.TabPages["tabPage1"])
             {
-                int index = this.playlistBox.IndexFromPoint(e.Location);
+                MessageBox.Show("SelectedIndex 0");
+                if (ActivePlaylistbox != null)
+                    ActivePlaylistbox = playlistBox;
+            }
+           else if (tabControl1.SelectedTab == tabControl1.TabPages["tabSecondPlaylist"])
+            {
+                MessageBox.Show("SelectedIndex 1");
+                if (ActivePlaylistbox != null)
+                    ActivePlaylistbox = playlistBoxTwo; ;
+            }
+
+            if (ActivePlaylistbox.Items.Count > 0)
+            {
+
+                int index = ActivePlaylistbox.IndexFromPoint(e.Location);
 
                 if (index != System.Windows.Forms.ListBox.NoMatches)
                 {
-                    currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
+                    currentTrack = ActivePlaylistbox.GetItemText(ActivePlaylistbox.SelectedItem);
                     mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
                     playFileAndSetOtherStuff();
                     isPlaying = true;
-                    // tB_currentTrack.Text = currentTrack.Remove(currentTrack.Length - 4);
 
                 }
             }
@@ -415,12 +435,12 @@ namespace GPlay
                     {
 
                         // Creating seperate playlistbox and TABPage
-                        System.Windows.Forms.ListBox playlistBoxTwo;
+                       
                         playlistBoxTwo = new System.Windows.Forms.ListBox();
                         playlistBoxTwo.Dock = DockStyle.Fill;
                         playlistBoxTwo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             |           System.Windows.Forms.AnchorStyles.Left)
-            |            System.Windows.Forms.AnchorStyles.Right)));
+            |           System.Windows.Forms.AnchorStyles.Right)));
                         playlistBoxTwo.FormattingEnabled = true;
                         playlistBoxTwo.Location = new System.Drawing.Point(0, 65);
                         playlistBoxTwo.Name = "playlistBoxTwo";
@@ -445,7 +465,7 @@ namespace GPlay
                         //
                         tabSecondPlaylist.Controls.Add(playlistBoxTwo);
                         tabControl1.TabPages.Add(tabSecondPlaylist);
-                       // tabControl1.Controls.Add(tabSecondPlaylist);
+                        // tabControl1.Controls.Add(tabSecondPlaylist);
 
                         tabSecondPlaylist.BringToFront();
 
@@ -462,6 +482,7 @@ namespace GPlay
                         }
                         tabSecondPlaylist.Text = openPlaylistFile.FileName;
                         MessageBox.Show(openPlaylistFile.FileName);
+                        
 
                         // show current playlist name
                         //l_currentPlaylist.Text = openPlaylistFile.FileName;
@@ -473,7 +494,7 @@ namespace GPlay
 
             }
         }
-    
+
 
 
 
@@ -498,6 +519,7 @@ namespace GPlay
             isPlaying = true;
             seconds = 0;
             trackBar2.Value = 0;
+
             mp3player_PlayStateChange();
 
             // Starting a seperate thread and wait for 1000ms for track to load
@@ -608,7 +630,7 @@ namespace GPlay
         {
             if (playlistBox.Items.Count > 0)
             {
-                
+
                 playlistBox.SelectedIndex = playlistBox.SelectedIndex + 1;
                 playlistBox.SelectedItem = playlistBox.SelectedIndex;
                 currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
@@ -623,7 +645,14 @@ namespace GPlay
         {
 
         }
+
+        private void tabPage1_MouseClick(object sender, MouseEventArgs e)
+        {
+           // ActivePlaylistbox = playlistBox;
+
+        }
+
+       
+
     }
-
-
 }
