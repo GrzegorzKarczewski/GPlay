@@ -49,6 +49,7 @@ namespace GPlay
             // leaving this comment as a reminder
             ActivePlaylistbox = new ListBox();
             tabPage1.Controls.Add(playlistBox);
+
             playlistBox.Dock = DockStyle.Fill;
             tabPage1.Text = defaultPlaylist;
 
@@ -191,6 +192,7 @@ namespace GPlay
                     //trackBar2.TickFrequency = (int)mp3player.currentMedia.duration;
 
 
+
                     seconds += 1;
                     if (isNextTrack)
                     {
@@ -229,7 +231,7 @@ namespace GPlay
                         {
                             ActivePlaylistbox.SelectedIndex = ActivePlaylistbox.SelectedIndex + 1;
                             ActivePlaylistbox.SelectedItem = ActivePlaylistbox.SelectedIndex;
-                            currentTrack = playlistBox.GetItemText(ActivePlaylistbox.SelectedItem);
+                            currentTrack = ActivePlaylistbox.GetItemText(ActivePlaylistbox.SelectedItem);
                             mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
                             playFileAndSetOtherStuff();
                             isPlaying = true;
@@ -309,15 +311,8 @@ namespace GPlay
             //ref ListBox activePlaylistBox =
             if (tabControl1.SelectedTab == tabControl1.TabPages["tabPage1"])
             {
-                MessageBox.Show("SelectedIndex 0");
                 if (ActivePlaylistbox != null)
                     ActivePlaylistbox = playlistBox;
-            }
-           else if (tabControl1.SelectedTab == tabControl1.TabPages["tabSecondPlaylist"])
-            {
-                MessageBox.Show("SelectedIndex 1");
-                if (ActivePlaylistbox != null)
-                    ActivePlaylistbox = playlistBoxTwo; ;
             }
 
             if (ActivePlaylistbox.Items.Count > 0)
@@ -328,6 +323,7 @@ namespace GPlay
                 if (index != System.Windows.Forms.ListBox.NoMatches)
                 {
                     currentTrack = ActivePlaylistbox.GetItemText(ActivePlaylistbox.SelectedItem);
+                    MessageBox.Show(currentTrack);
                     mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
                     playFileAndSetOtherStuff();
                     isPlaying = true;
@@ -336,6 +332,7 @@ namespace GPlay
             }
 
         }
+
 
         private void savePlaylistToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -414,14 +411,14 @@ namespace GPlay
             {
                 if (isOtherPlaylistLoaded)
                 {
-                    if (playlistBox.Items.Count > 0)
+                    if (ActivePlaylistbox.Items.Count > 0)
                     {
-                        playlistBox.Items.Clear();
+                        ActivePlaylistbox.Items.Clear();
                     }
                     string[] lines = System.IO.File.ReadAllLines(openPlaylistFile.FileName);
                     foreach (string line in lines)
                     {
-                        playlistBox.Items.Add(line);
+                        ActivePlaylistbox.Items.Add(line);
                     }
 
                     // show current playlist name
@@ -438,9 +435,8 @@ namespace GPlay
                        
                         playlistBoxTwo = new System.Windows.Forms.ListBox();
                         playlistBoxTwo.Dock = DockStyle.Fill;
-                        playlistBoxTwo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            |           System.Windows.Forms.AnchorStyles.Left)
-            |           System.Windows.Forms.AnchorStyles.Right)));
+                        tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                |       System.Windows.Forms.AnchorStyles.Right)));
                         playlistBoxTwo.FormattingEnabled = true;
                         playlistBoxTwo.Location = new System.Drawing.Point(0, 65);
                         playlistBoxTwo.Name = "playlistBoxTwo";
@@ -450,14 +446,15 @@ namespace GPlay
 
 
 
-                        TabPage tabSecondPlaylist = new TabPage("SecondPlaylist");
-                        //tabControl1.Controls.Add(tabSecondPlaylist);
+
+                        TabPage tabSecondPlaylist = new TabPage("tabSecondPlaylist");
+                       // tabControl1.Controls.Add(tabSecondPlaylist);
                         //this.Controls.Add(tabControl1);
 
                         tabSecondPlaylist.Location = new System.Drawing.Point(8, 44); // it was 4,22
                         //tabSecondPlaylist.Name = "tabSecondPlaylist";
                         tabSecondPlaylist.Padding = new System.Windows.Forms.Padding(3);
-                        tabSecondPlaylist.Size = new System.Drawing.Size(1164, 529);
+                        tabSecondPlaylist.Size = new System.Drawing.Size(1176, 665);
                         tabSecondPlaylist.TabIndex = 1;
                         tabSecondPlaylist.Text = "";
                         tabSecondPlaylist.UseVisualStyleBackColor = true;
@@ -467,7 +464,7 @@ namespace GPlay
                         tabControl1.TabPages.Add(tabSecondPlaylist);
                         // tabControl1.Controls.Add(tabSecondPlaylist);
 
-                        tabSecondPlaylist.BringToFront();
+                        //tabSecondPlaylist.BringToFront();
 
 
                         // populating playlist
@@ -481,6 +478,8 @@ namespace GPlay
                             playlistBoxTwo.Items.Add(line);
                         }
                         tabSecondPlaylist.Text = openPlaylistFile.FileName;
+                        tabControl1.Selected += new System.Windows.Forms.TabControlEventHandler(tabSecondPlaylist_Selected);
+
                         MessageBox.Show(openPlaylistFile.FileName);
                         
 
@@ -641,18 +640,17 @@ namespace GPlay
 
         }
 
-        private void tabPage1_Click(object sender, EventArgs e)
-        {
 
+        private void tabSecondPlaylist_Selected(object sender, TabControlEventArgs e)
+        {
+            // Change active playlistbox if selected second playlist
+            if (ActivePlaylistbox != null && playlistBoxTwo != null)
+                ActivePlaylistbox = playlistBoxTwo;
         }
 
-        private void tabPage1_MouseClick(object sender, MouseEventArgs e)
+        private void tabControl1_Selected(object sender, TabControlEventArgs e)
         {
-           // ActivePlaylistbox = playlistBox;
-
+            // for now its empty as doubleclick as setter for active playlist
         }
-
-       
-
     }
 }
