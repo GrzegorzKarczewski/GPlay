@@ -127,9 +127,9 @@ namespace GPlay
                 // we can still unpause it with play button
                 //currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
                 // mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
-                playlistBox.SelectedIndex = 0;
-                playlistBox.SelectedItem = playlistBox.SelectedIndex;
-                currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
+                ActivePlaylistbox.SelectedIndex = 0;
+                ActivePlaylistbox.SelectedItem = ActivePlaylistbox.SelectedIndex;
+                currentTrack = ActivePlaylistbox.GetItemText(ActivePlaylistbox.SelectedItem);
                 mp3player.settings.volume = 100;
                 playFileAndSetOtherStuff();
                 isPlaying = true;
@@ -480,7 +480,6 @@ namespace GPlay
                         tabSecondPlaylist.Text = openPlaylistFile.FileName;
                         tabControl1.Selected += new System.Windows.Forms.TabControlEventHandler(tabSecondPlaylist_Selected);
 
-                        MessageBox.Show(openPlaylistFile.FileName);
                         
 
                         // show current playlist name
@@ -496,13 +495,11 @@ namespace GPlay
 
 
 
-
-
         private void clearCurrentPlaylistToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (playlistBox.Items.Count > 0)
+            if (ActivePlaylistbox.Items.Count > 0)
             {
-                playlistBox.Items.Clear();
+                ActivePlaylistbox.Items.Clear();
             }
         }
 
@@ -517,7 +514,7 @@ namespace GPlay
             mp3player.controls.play();
             isPlaying = true;
             seconds = 0;
-            trackBar2.Value = 0;
+            trackBar2.Value = (int)mp3player.controls.currentPosition;
 
             mp3player_PlayStateChange();
 
@@ -614,12 +611,12 @@ namespace GPlay
         }
         private void b_prev_Click(object sender, EventArgs e)
         {
-            if (playlistBox.Items.Count > 0)
+            if (ActivePlaylistbox.Items.Count > 0)
             {
 
-                playlistBox.SelectedIndex = playlistBox.SelectedIndex - 1;
-                playlistBox.SelectedItem = playlistBox.SelectedIndex;
-                currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
+                ActivePlaylistbox.SelectedIndex = ActivePlaylistbox.SelectedIndex - 1;
+                ActivePlaylistbox.SelectedItem = ActivePlaylistbox.SelectedIndex;
+                currentTrack = ActivePlaylistbox.GetItemText(ActivePlaylistbox.SelectedItem);
                 mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
                 playFileAndSetOtherStuff();
                 isPlaying = true;
@@ -627,12 +624,12 @@ namespace GPlay
         }
         private void b_next_Click(object sender, EventArgs e)
         {
-            if (playlistBox.Items.Count > 0)
+            if (ActivePlaylistbox.Items.Count > 0)
             {
 
-                playlistBox.SelectedIndex = playlistBox.SelectedIndex + 1;
-                playlistBox.SelectedItem = playlistBox.SelectedIndex;
-                currentTrack = playlistBox.GetItemText(playlistBox.SelectedItem);
+                ActivePlaylistbox.SelectedIndex = ActivePlaylistbox.SelectedIndex + 1;
+                ActivePlaylistbox.SelectedItem = ActivePlaylistbox.SelectedIndex;
+                currentTrack = ActivePlaylistbox.GetItemText(ActivePlaylistbox.SelectedItem);
                 mp3player.URL = Path.Combine(selectedFolder + Path.DirectorySeparatorChar + currentTrack);
                 playFileAndSetOtherStuff();
                 isPlaying = true;
